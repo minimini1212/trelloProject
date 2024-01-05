@@ -1,0 +1,29 @@
+// 회원가입
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+  "email": "tester1@test.com",
+  "password": "123456",
+  "passwordConfirm": "123456",
+  "name": "tester1"
+}
+
+###
+// 로그인
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "tester1@test.com",
+  "password": "123456"
+}
+
+###
+// 토큰 재발급
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NDUyODU3LCJleHAiOjE3MDUwNTc2NTd9.H_pS6ee18w2V8h1i-F_RFRWB4oRkR7gUEj4WYMwKsnQ"
+}
