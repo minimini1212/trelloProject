@@ -12,6 +12,7 @@ import {
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CommentModule } from './comment/comment.module';
 
 
 const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
@@ -40,6 +41,7 @@ const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
