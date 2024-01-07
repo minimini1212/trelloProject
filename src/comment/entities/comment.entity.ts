@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -8,25 +8,23 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({
-  name: 'comments',
-})
+@Entity('comments')
 export class Comment {
-  @PrimaryGeneratedColumn()
-  commentid: number;
+  @PrimaryGeneratedColumn({ unsigned: true })
+  commentId: number;
 
+  @IsNotEmpty({ message: '내용이 없습니다.' })
   @IsString()
-  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
-  @Column('varchar', { length: 1000, nullable: false })
+  @Column('text')
   comment: string;
 
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
-  // @ManyToOne(() => CardEntitiy, (card) => cadrd.cardId)
+  // @ManyToOne(() => CardEntitiy, (card) => card.cardId)
   @Column('int', { select: true, nullable: false })
   cardId: number;
 
   // @ManyToOne(() => User, (user) => user.id)
-  @IsNumber()
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @Column('int', { select: true, nullable: false })
   authorId: number;
 
@@ -37,5 +35,5 @@ export class Comment {
   updatedAt: Date;
 
   @DeleteDateColumn()
-  deletedAt?: Date;
+  deletedAt: Date;
 }

@@ -6,13 +6,4 @@ import { IsString } from 'class-validator';
 export class UpdateCommentDto extends PartialType(CreateCommentDto) {
   @IsString()
   comment: string;
-
-  @IsString()
-  authorId: number;
-
-  createdAt: Date;
-
-  updatedAt: Date;
-
-  deletedAt?: Date;
 }
