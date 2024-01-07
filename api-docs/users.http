@@ -1,4 +1,4 @@
 ###
 // 사용자 정보 조회
 GET http://localhost:3000/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzA0NDQ4MDU3LCJleHAiOjE3MDQ0OTEyNTd9.HNSgss0SglOO2aVg4uBtcpFzpFw4kVDqoMpsvVcMnXQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE0OTA1LCJleHAiOjE3MDQ2MTg1MDV9.35iTbk_rAmD2LrmZKMXiopDXMg4cmdrh9h38tMJwH3o

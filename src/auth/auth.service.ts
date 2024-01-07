@@ -20,7 +20,14 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async signup({ email, name, password, passwordConfirm }: SignUpDto) {
+  async signup({
+    email,
+    name,
+    imagePath,
+    password,
+    passwordConfirm,
+    description,
+  }: SignUpDto) {
     const existedUser = await this.userRepository.findOneBy({ email });
 
     if (existedUser) {
@@ -42,6 +49,8 @@ export class AuthService {
       email,
       password: hashedPassword,
       name,
+      imagePath,
+      description,
     });
 
     return this.signIn(user.id);
@@ -56,6 +65,17 @@ export class AuthService {
     this.userRepository.update(id, { refreshToken });
 
     return { accessToken, refreshToken };
+  }
+
+  async unregister(refreshToken: string) {
+    const { id } = this.jwtService.verify(refreshToken);
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
+    }
+
+    await this.userRepository.delete(id);
   }
 
   async validateUser({ email, password }: SignInDto) {

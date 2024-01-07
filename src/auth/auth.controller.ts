@@ -6,11 +6,15 @@ import {
   Request,
   UseGuards,
   Headers,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDto } from './dto/sign-in.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +26,13 @@ export class AuthController {
    * @returns {Object} statusCode, message, user
    */
   @Post('/signup')
-  async signUp(@Body() signUpDto: SignUpDto): Promise<object> {
+  @UseInterceptors(FileInterceptor('image'))
+  async signUp(
+    @UploadedFile() image,
+    @Body() signUpDto: SignUpDto,
+  ): Promise<object> {
+    signUpDto.imagePath = image ? image.filename : null;
+
     const user = await this.authService.signup(signUpDto);
 
     return {
@@ -55,6 +65,7 @@ export class AuthController {
    * @param refreshToken
    * @returns {Object} statusCode, message, accessToken
    */
+  @UseGuards(AuthGuard('refresh'))
   @Post('/refresh')
   async refresh(@Headers('refresh-token') refreshToken: string) {
     const accessToken = await this.authService.refreshToken(refreshToken);
@@ -63,6 +74,24 @@ export class AuthController {
       statusCode: HttpStatus.OK,
       message: '토큰 재발급에 성공했습니다.',
       accessToken,
+    };
+  }
+
+  /**
+   * 회원 탈퇴 API
+   * @param refreshToken
+   * @returns {Object} statusCode, message
+   */
+  @UseGuards(AuthGuard('refresh'))
+  @Delete('/unregister')
+  async unregister(
+    @Headers('refresh-token') refreshToken: string,
+  ): Promise<Object> {
+    await this.authService.unregister(refreshToken);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '회원탈퇴에 성공했습니다.',
     };
   }
 }

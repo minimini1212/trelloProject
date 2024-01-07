@@ -19,7 +19,9 @@ export class UserService {
 
     return {
       name: user.name,
+      image: user.imagePath,
       email: user.email,
+      description: user.description,
     };
   }
 }
