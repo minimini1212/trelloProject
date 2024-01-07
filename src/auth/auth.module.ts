@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MulterConfigService } from './middlewares/imageUpload.middleware';
 import { MulterModule } from '@nestjs/platform-express';
+import { RefreshTokenStrategy } from './strategies/refresh.strategy';
 
 @Module({
   imports: [
@@ -32,6 +33,12 @@ import { MulterModule } from '@nestjs/platform-express';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, MulterConfigService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshTokenStrategy,
+    MulterConfigService,
+  ],
 })
 export class AuthModule {}
