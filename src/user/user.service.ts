@@ -47,9 +47,6 @@ export class UserService {
       );
     }
 
-    console.log('updateUserDto.password:', updateUserDto.password);
-    console.log('user.password:', user.password);
-
     const isValidPassword = await bcrypt.compare(
       updateUserDto.password,
       user.password,
