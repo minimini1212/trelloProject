@@ -1,8 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
+import { BoardUser } from 'src/boardUser/entities/boardUser.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,9 +28,19 @@ export class Board {
   @Column({ type: 'text', nullable: false })
   description: string;
 
+  @Column()
+  creatorId: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  //병합 시 수정
+  // @ManyToOne(() => User, (user) => user.boards)
+  // creator: User;
+
+  @OneToMany(() => BoardUser, (boardUser) => boardUser.board)
+  boardUsers: BoardUser[];
 }

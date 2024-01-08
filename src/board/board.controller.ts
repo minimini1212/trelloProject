@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -7,28 +15,45 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
+  //보드 생성
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardService.create(createBoardDto);
+  async create(@Body() createBoardDto: CreateBoardDto, @Req() req) {
+    const { userId } = req.user;
+    const createdBoard = await this.boardService.create(createBoardDto, userId);
+    return { message: createdBoard.message, board: createdBoard.board };
   }
 
-  @Get()
-  findAll() {
-    return this.boardService.findAll();
+  //보드 수정
+  @Patch(':boardId')
+  async update(
+    @Param('boardId') boardId: number,
+    @Body() updateBoardDto: UpdateBoardDto,
+  ) {
+    const updatedBoard = await this.boardService.update(
+      boardId,
+      updateBoardDto,
+    );
+    return { message: updatedBoard.message, board: updatedBoard.board };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.boardService.findOne(+id);
+  //보드 삭제
+  @Delete(':boardId')
+  async remove(@Param('boardId') id: number, @Req() req) {
+    const { userId } = req.user;
+    const result = await this.boardService.remove(id, userId);
+    return { message: result.message };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardService.update(+id, updateBoardDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.boardService.remove(+id);
+  //보드 초대
+  @Post(':boardId/invite')
+  async invite(
+    @Param('boardId') boardId: number,
+    @Body() inviteData: { userIds: number[] },
+  ) {
+    const inviteResult = await this.boardService.inviteUsers(
+      boardId,
+      inviteData.userIds,
+    );
+    return { message: inviteResult.message };
   }
 }
