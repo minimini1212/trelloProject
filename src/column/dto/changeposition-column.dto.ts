@@ -1,6 +1,6 @@
 import { PickType } from "@nestjs/mapped-types";
 import { Columns } from "../entities/column.entity";
 
-export class UpdateColumnDto extends PickType(Columns, [
-    'title',
+export class ChangePositionColumnDto extends PickType(Columns, [
+    'position',
 ]) {}
