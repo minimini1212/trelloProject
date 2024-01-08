@@ -13,24 +13,8 @@ import {
 } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CommentModule } from './comment/comment.module';
-
-
-const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
-  useFactory: async (
-    configService: ConfigService,
-  ): Promise<TypeOrmModuleOptions> => ({
-    type: 'mysql',
-    host: configService.get('DB_HOST'),
-    port: configService.get('DB_PORT'),
-    username: configService.get('DB_USERNAME'),
-    password: configService.get('DB_PASSWORD'),
-    database: configService.get('DB_NAME'),
-    autoLoadEntities: true,
-    synchronize: configService.get('DB_SYNC'),
-    logging: true,
-  }),
-  inject: [ConfigService],
-};
+import { configModuleValidationSchema } from './configs/env-validate.config';
+import { typeOrmModuleOptions } from './configs/database.config';
 
 @Module({
   imports: [
@@ -38,7 +22,10 @@ const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     AuthModule,
     BoardModule,
     ColumnModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: configModuleValidationSchema,
+    }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     CardModule,
     CommentModule,

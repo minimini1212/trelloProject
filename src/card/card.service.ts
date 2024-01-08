@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Card } from './entities/card.entity';
 import { UpdateCardDto } from './dto/update-card.dto';
 
 @Injectable()
 export class CardService {
-  create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+  constructor(
+    @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
+  ) {}
+
+  async findAll(columnId: number) {
+    if (await this.cardRepository.findOneBy({ columnId }) === null)
+      throw new NotFoundException('해당 카드들이 존재하지 않습니다.')
+    return await this.cardRepository.find({
+      where: { columnId: columnId },
+    })
   }
 
-  findAll() {
-    return `This action returns all card`;
+  async create(createCardDto: CreateCardDto): Promise<Card> {
+    // if (await columnRepository.findOneBy({ columnId: createCardDto.columnId }))
+    // throw new NotFoundException('해당 컬룸이 존재하지 않습니다.')
+   return this.cardRepository.save({
+    columnId: createCardDto.columnId,
+    title: createCardDto.title,
+    description: createCardDto.description,
+    backgroundColor: createCardDto.backgroundColor,
+    position: createCardDto.position,
+   })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  async delete(cardId: number) {
+    if(await this.cardRepository.findOneBy({cardId}) === null) 
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.')
+    await this.cardRepository.delete(cardId)
+    return 'Card deleted'
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  async update(updateCardDto: UpdateCardDto, cardId: number) {
+    if(await this.cardRepository.findOneBy({cardId}) === null) 
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.')
+    await this.cardRepository.update(cardId, updateCardDto)
+    return 'Card updated'
   }
 }

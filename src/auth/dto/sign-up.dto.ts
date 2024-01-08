@@ -1,12 +1,13 @@
 import { PickType } from '@nestjs/mapped-types';
-import { User } from '../entities/user.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { User } from 'src/user/entities/user.entity';
 
-export class UpdateUserDto extends PickType(User, [
-  'name',
-  'description',
+export class SignUpDto extends PickType(User, [
+  'email',
   'password',
+  'name',
   'imagePath',
+  'description',
 ]) {
   @IsNotEmpty({ message: '비밀번호 재확인을 입력해주세요.' })
   @IsString()
