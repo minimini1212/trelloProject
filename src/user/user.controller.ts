@@ -1,34 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Request,
+  UseGuards,
+  HttpStatus,
+  UploadedFile,
+  UseInterceptors,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  /**
+   * 사용자 정보 조회 API
+   * @param req
+   * @returns {Object} statusCode, message, user
+   */
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/me')
+  async findMe(@Request() req: any): Promise<object> {
+    const userId = req.user.id;
+
+    const user = await this.userService.findById(userId);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '사용자 정보 조회에 성공했습니다.',
+      user,
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
+  /**
+   * 사용자 정보 수정 API
+   * @param req
+   * @param file
+   * @param {UpdateUserDto} updateUserDto
+   * @returns {Object} statusCode, message, user
+   */
+  @UseGuards(AuthGuard('jwt'))
+  @Put('/me')
+  @UseInterceptors(FileInterceptor('image'))
+  async update(
+    @Request() req: any,
+    @UploadedFile() file,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<object> {
+    const userId = req.user.id;
+    let imagePath = null;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+    if (file) {
+      imagePath = file.path;
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+    const user = await this.userService.update(
+      userId,
+      imagePath,
+      updateUserDto,
+    );
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: '사용자 정보 수정에 성공했습니다.',
+      user,
+    };
   }
 }
