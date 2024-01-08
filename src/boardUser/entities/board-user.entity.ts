@@ -21,7 +21,7 @@ export class BoardUser {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @Column({ unsigned: true })
+  @Column()
   userId: number;
 
   @Column()
