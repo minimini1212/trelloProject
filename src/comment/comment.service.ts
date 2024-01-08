@@ -12,7 +12,10 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async create(createCommentDto: CreateCommentDto): Promise<Comment> {
+  async create(
+    cardId: number,
+    createCommentDto: CreateCommentDto,
+  ): Promise<Comment> {
     return this.commentRepository.save({
       cardId: createCommentDto.cardId,
       comment: createCommentDto.comment,

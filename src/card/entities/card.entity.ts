@@ -1,42 +1,50 @@
-import { User } from "src/user/entities/user.entity"
-import { Column as ColumnEntitiy }from "src/column/entities/column.entity"
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
-import { IsNotEmpty } from "class-validator"
+import { User } from 'src/user/entities/user.entity';
+import { Column as ColumnEntitiy } from 'src/column/entities/column.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity('Cards')
 export class Card {
-    @PrimaryGeneratedColumn()
-    cardId: number
+  @PrimaryGeneratedColumn()
+  cardId: number;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    // @ManyToOne(() => ColumnEntitiy, (column) => column.columnId)
-    @Column()
-    columnId: number
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  // @ManyToOne(() => ColumnEntitiy, (column) => column.columnId)
+  @Column()
+  columnId: number;
 
-    // @ManyToOne(() => User, (user) => user.id)
-    @Column()
-    authorId: number
+  // @ManyToOne(() => User, (user) => user.id)
+  @Column()
+  authorId: number;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column()
-    title: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column()
+  title: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column('text')
-    description: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column('text')
+  description: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column('')
-    backgroundColor: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column('')
+  backgroundColor: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column()
-    position: number
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column()
+  position: number;
 
-    @CreateDateColumn()
-    createdAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date
-
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
