@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { BoardUser } from 'src/boardUser/entities/boardUser.entity';
+import { BoardUser } from 'src/boardUser/entities/board-user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -17,15 +17,15 @@ export class Board {
   boardId: number;
 
   @IsNotEmpty({ message: '입력란을 확인해 주세요.' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column()
   boardName: string;
 
   @IsNotEmpty({ message: '입력란을 확인해 주세요.' })
-  @Column({ type: 'varchar', nullable: false })
+  @Column()
   backgroundColor: string;
 
   @IsNotEmpty({ message: '입력란을 확인해 주세요.' })
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text' })
   description: string;
 
   @Column()

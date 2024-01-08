@@ -1,5 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { Board } from 'src/board/entities/board.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -20,11 +21,7 @@ export class BoardUser {
   @Column({ default: false })
   isAdmin: boolean;
 
-  // 병합 시 id지우고 수정
-  // @Column()
-  // userEmail: string;
-
-  @Column()
+  @Column({ unsigned: true })
   userId: number;
 
   @Column()
@@ -36,9 +33,8 @@ export class BoardUser {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // 병합 시 수정
-  // @ManyToOne(()=> User)
-  // user:User;
+  @ManyToOne(() => User)
+  user: User;
 
   @ManyToMany(() => Board, (board) => board.boardUsers)
   board: Board;

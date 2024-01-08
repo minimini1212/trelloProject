@@ -8,13 +8,14 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './entities/board.entity';
-import { BoardUser } from 'src/boardUser/entities/boardUser.entity';
+import { BoardUser } from 'src/boardUser/entities/board-user.entity';
 
 @Injectable()
 export class BoardService {
   constructor(
     @InjectRepository(Board)
     private readonly boardRepository: Repository<Board>,
+    @InjectRepository(BoardUser)
     private readonly boardUserRepository: Repository<BoardUser>,
   ) {}
 
@@ -27,11 +28,9 @@ export class BoardService {
 
   //보드 수정
   async update(id: number, updateBoardDto: UpdateBoardDto) {
-    await this.verifyBoardById(id);
-    await this.boardRepository.update(id, updateBoardDto);
-    const updatedBoard = this.boardRepository.findOne({
-      where: { boardId: id },
-    });
+    let oldBoard = await this.verifyBoardById(id);
+    oldBoard = { ...oldBoard, ...updateBoardDto };
+    const updatedBoard = await this.boardRepository.save(oldBoard);
     return { message: '보드가 수정 되었습니다.', board: updatedBoard };
   }
 
@@ -55,7 +54,10 @@ export class BoardService {
         where: { userId, boardId },
       });
       if (!existingUser) {
-        const newUser = this.boardUserRepository.create({ userId, boardId });
+        const newUser = this.boardUserRepository.create({
+          userId,
+          boardId,
+        });
         await this.boardUserRepository.save(newUser);
         addedUsers.push(userId);
       }
@@ -64,9 +66,9 @@ export class BoardService {
   }
 
   //보드 ID로 보드 찾기
-  private async verifyBoardById(id: number) {
+  async verifyBoardById(boardId: number) {
     const board = await this.boardRepository.findOne({
-      where: { boardId: id },
+      where: { boardId },
     });
     if (!board) {
       throw new NotFoundException('보드를 찾을 수 없습니다.');
@@ -76,6 +78,7 @@ export class BoardService {
 
   //권한 체크
   private checkPermission(creatorId: number, userId: number) {
+    console.log('아이디', creatorId, userId);
     if (creatorId !== userId) {
       throw new ForbiddenException('생성한 사용자만 삭제할 수 있습니다.');
     }
