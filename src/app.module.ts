@@ -12,6 +12,7 @@ import {
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CommentModule } from './comment/comment.module';
 import { configModuleValidationSchema } from './configs/env-validate.config';
 import { typeOrmModuleOptions } from './configs/database.config';
 
@@ -27,6 +28,7 @@ import { typeOrmModuleOptions } from './configs/database.config';
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
