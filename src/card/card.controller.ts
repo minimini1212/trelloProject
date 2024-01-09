@@ -46,6 +46,6 @@ export class CardController {
     @Param('id') id: string,
     @Body() changePositionCardDto: ChangePositionCardDto,
   ) {
-    return this.columnService.changePosition(+id, changePositionColumnDto);
+    return this.cardService.changePosition(+id, changePositionCardDto);
   }
 }
