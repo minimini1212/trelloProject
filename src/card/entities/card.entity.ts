@@ -42,6 +42,9 @@ export class Card {
   @Column()
   position: string;
 
+  @Column({ type: 'timestamptz' }) // Recommended
+  deadline: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 

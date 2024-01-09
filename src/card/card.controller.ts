@@ -14,6 +14,7 @@ import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { update } from 'lodash';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { DeadlineCardDto } from './dto/deadline-card.dto';
 import { ChangePositionCardDto } from './dto/changeposition-card.dto';
 
 @Controller('card')
@@ -39,6 +40,11 @@ export class CardController {
   @Put('/:id')
   update(@Body() updateCardDto: UpdateCardDto, @Param('id') id: string) {
     return this.cardService.update(updateCardDto, +id);
+  }
+
+  @Put('/:id/deadline')
+  deadline(@Body() deadlineCardDto: DeadlineCardDto, @Param('id') id: string) {
+    return this.cardService.updateDeadline(deadlineCardDto, +id);
   }
 
   @Put(':id/position')

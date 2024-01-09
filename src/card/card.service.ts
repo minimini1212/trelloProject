@@ -64,6 +64,13 @@ export class CardService {
     return 'Card updated';
   }
 
+  async updateDeadline(deadlineCardDto: DeadlineCardDto, cardId: number) {
+    if ((await this.cardRepository.findOneBy({ cardId })) === null)
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+    await this.cardRepository.update(DeadlineCardDto, cardId);
+    return 'Card updated';
+  }
+
   async changePosition(
     cardId: number,
     changePositionCardDto: ChangePositionCardDto,
