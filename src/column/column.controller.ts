@@ -28,7 +28,7 @@ export class ColumnController {
     const newColumn =  this.columnService.create(createColumnDto);
 
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: '생성 성공',
       newColumn,
     };
