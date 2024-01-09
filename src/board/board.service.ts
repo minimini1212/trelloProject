@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -63,7 +64,7 @@ export class BoardService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      return { message: '존재하지 않는 사용자입니다.' };
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
     const checkBoardUser = await this.boardUserRepository.findOne({
@@ -71,7 +72,7 @@ export class BoardService {
     });
 
     if (checkBoardUser) {
-      return { message: '이미 초대된 사용자입니다.' };
+      throw new ConflictException('이미 초대된 사용자입니다.');
     }
 
     const newBoardUser = this.boardUserRepository.create({
