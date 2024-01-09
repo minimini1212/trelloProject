@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './entities/board.entity';
 import { BoardUser } from 'src/boardUser/entities/board-user.entity';
+import _ from 'lodash';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class BoardService {
@@ -17,52 +19,69 @@ export class BoardService {
     private readonly boardRepository: Repository<Board>,
     @InjectRepository(BoardUser)
     private readonly boardUserRepository: Repository<BoardUser>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   //보드 생성
   async create(createBoardDto: CreateBoardDto, creatorId: number) {
-    const board = this.boardRepository.create({ ...createBoardDto, creatorId });
+    const board = this.boardRepository.create({
+      ...createBoardDto,
+      creatorId,
+    });
+
     const savedBoard = await this.boardRepository.save(board);
-    return { message: '보드가 생성되었습니다', board: savedBoard };
+
+    return savedBoard;
   }
 
   //보드 수정
   async update(id: number, updateBoardDto: UpdateBoardDto) {
     let oldBoard = await this.verifyBoardById(id);
     oldBoard = { ...oldBoard, ...updateBoardDto };
+
     const updatedBoard = await this.boardRepository.save(oldBoard);
-    return { message: '보드가 수정 되었습니다.', board: updatedBoard };
+
+    return updatedBoard;
   }
 
   //보드 삭제
-  async remove(id: number, userId: number) {
-    const board = await this.verifyBoardById(id);
+  async remove(boardId: number, userId: number) {
+    const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
-    const deleteResult = await this.boardRepository.delete(id);
-    if (deleteResult.affected) {
-      return { message: '삭제되었습니다.' };
-    }
+
+    const deleteResult = await this.boardRepository.delete(boardId);
+
+    return deleteResult;
   }
 
   //보드 초대
-  async inviteUsers(boardId: number, userIds: number[]) {
-    await this.verifyBoardById(boardId);
-    const addedUsers = [];
+  async inviteUser(boardId: number, email: string, userId: number) {
+    const board = await this.verifyBoardById(boardId);
+    this.checkPermission(board.creatorId, userId);
 
-    for (const userId of userIds) {
-      const existingUser = await this.boardUserRepository.findOne({
-        where: { userId, boardId },
-      });
-      if (!existingUser) {
-        const newUser = this.boardUserRepository.create({
-          userId,
-          boardId,
-        });
-        await this.boardUserRepository.save(newUser);
-        addedUsers.push(userId);
-      }
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return { message: '존재하지 않는 사용자입니다.' };
     }
-    return { message: `초대된 사용자: ${addedUsers.join(', ')}` };
+
+    const checkBoardUser = await this.boardUserRepository.findOne({
+      where: { userId: user.id, boardId },
+    });
+
+    if (checkBoardUser) {
+      return { message: '이미 초대된 사용자입니다.' };
+    }
+
+    const newBoardUser = this.boardUserRepository.create({
+      userId: user.id,
+      boardId,
+    });
+
+    await this.boardUserRepository.save(newBoardUser);
+
+    return newBoardUser;
   }
 
   //보드 ID로 보드 찾기

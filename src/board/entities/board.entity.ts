@@ -1,10 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
-import { BoardUser } from 'src/boardUser/entities/board-user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,6 +13,9 @@ import {
 export class Board {
   @PrimaryGeneratedColumn()
   boardId: number;
+
+  @Column()
+  adminName: string;
 
   @IsNotEmpty({ message: '입력란을 확인해 주세요.' })
   @Column()
@@ -36,11 +37,4 @@ export class Board {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  //병합 시 수정
-  // @ManyToOne(() => User, (user) => user.boards)
-  // creator: User;
-
-  @OneToMany(() => BoardUser, (boardUser) => boardUser.board)
-  boardUsers: BoardUser[];
 }

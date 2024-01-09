@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
@@ -23,9 +22,17 @@ export class BoardController {
   //보드 생성
   @Post()
   async create(@Body() createBoardDto: CreateBoardDto, @Req() req) {
-    const { id: userId } = req.user;
-    const createdBoard = await this.boardService.create(createBoardDto, userId);
-    return { message: createdBoard.message, board: createdBoard.board };
+    const { id: creatorId } = req.user;
+
+    const createdBoard = await this.boardService.create(
+      createBoardDto,
+      creatorId,
+    );
+
+    return {
+      message: '보드가 생성 되었습니다.',
+      createdBoard,
+    };
   }
 
   //보드 수정
@@ -38,30 +45,43 @@ export class BoardController {
       boardId,
       updateBoardDto,
     );
-    return { message: updatedBoard.message, board: updatedBoard.board };
+    return {
+      message: '보드가 수정 되었습니다.',
+      updatedBoard,
+    };
   }
 
   //보드 삭제
   @Delete(':boardId')
-  async remove(@Param('boardId') id: number, @Req() req) {
+  async remove(@Param('boardId') boardId: number, @Req() req) {
     const { id: userId } = req.user;
-    const result = await this.boardService.remove(id, userId);
-    return { message: result.message };
+    const deletedBoard = await this.boardService.remove(boardId, userId);
+    return {
+      message: '보드가 삭제 되었습니다.',
+      deletedBoard,
+    };
   }
 
   //보드 초대
   @Post(':boardId/invite')
-  async invite(
+  async inviteUser(
     @Param('boardId') boardId: number,
-    @Body() inviteData: { userIds: number[] },
+    @Body('email') email: string,
+    @Req() req,
   ) {
-    const inviteResult = await this.boardService.inviteUsers(
+    const { id: userId } = req.user;
+    const invitedBoard = await this.boardService.inviteUser(
       boardId,
-      inviteData.userIds,
+      email,
+      userId,
     );
-    return { message: inviteResult.message };
+    return {
+      message: '초대에 성공 하였습니다.',
+      invitedBoard,
+    };
   }
 
+  //보드 조회
   @Get(':boardId')
   async getBoard(@Param('boardId') boardId: number) {
     const board = await this.boardService.verifyBoardById(boardId);

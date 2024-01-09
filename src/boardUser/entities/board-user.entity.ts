@@ -1,12 +1,7 @@
-import { IsNotEmpty } from 'class-validator';
-import { Board } from 'src/board/entities/board.entity';
-import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,10 +27,4 @@ export class BoardUser {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @ManyToOne(() => User)
-  user: User;
-
-  @ManyToMany(() => Board, (board) => board.boardUsers)
-  board: Board;
 }
