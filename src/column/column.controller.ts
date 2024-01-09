@@ -71,7 +71,7 @@ export class ColumnController {
 
     return {
       statusCode: HttpStatus.OK,
-      message: '위치 이동 성공',
+      message: '컬럼 삭제 성공',
       deletedColumn,
     };
   }
