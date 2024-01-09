@@ -14,9 +14,6 @@ export class Board {
   @PrimaryGeneratedColumn()
   boardId: number;
 
-  @Column()
-  adminName: string;
-
   @IsNotEmpty({ message: '입력란을 확인해 주세요.' })
   @Column()
   boardName: string;

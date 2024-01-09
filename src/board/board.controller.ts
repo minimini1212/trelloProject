@@ -8,6 +8,7 @@ import {
   Get,
   UseGuards,
   Put,
+  HttpStatus,
 } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -30,6 +31,7 @@ export class BoardController {
     );
 
     return {
+      statusCode: HttpStatus.CREATED,
       message: '보드가 생성 되었습니다.',
       createdBoard,
     };
@@ -46,6 +48,7 @@ export class BoardController {
       updateBoardDto,
     );
     return {
+      statusCode: HttpStatus.OK,
       message: '보드가 수정 되었습니다.',
       updatedBoard,
     };
@@ -57,6 +60,7 @@ export class BoardController {
     const { id: userId } = req.user;
     const deletedBoard = await this.boardService.remove(boardId, userId);
     return {
+      statusCode: HttpStatus.OK,
       message: '보드가 삭제 되었습니다.',
       deletedBoard,
     };
@@ -76,6 +80,7 @@ export class BoardController {
       userId,
     );
     return {
+      statusCode: HttpStatus.OK,
       message: '초대에 성공 하였습니다.',
       invitedBoard,
     };
@@ -85,6 +90,10 @@ export class BoardController {
   @Get(':boardId')
   async getBoard(@Param('boardId') boardId: number) {
     const board = await this.boardService.verifyBoardById(boardId);
-    return { board };
+    return {
+      statusCode: HttpStatus.OK,
+      message: '조회에 성공 했습니다.',
+      board,
+    };
   }
 }

@@ -90,7 +90,7 @@ export class BoardService {
       where: { boardId },
     });
     if (!board) {
-      throw new NotFoundException('보드를 찾을 수 없습니다.');
+      throw new NotFoundException('보드가 존재하지 않습니다..');
     }
     return board;
   }

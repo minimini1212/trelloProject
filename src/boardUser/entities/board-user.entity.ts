@@ -13,9 +13,6 @@ export class BoardUser {
   @PrimaryGeneratedColumn()
   boardUserId: number;
 
-  @Column({ default: false })
-  isAdmin: boolean;
-
   @Column()
   userId: number;
 
