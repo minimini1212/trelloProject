@@ -24,8 +24,8 @@ export class ColumnController {
 
   // 컬럼생성
   @Post()
-  create(@Body() createColumnDto: CreateColumnDto) {
-    const newColumn =  this.columnService.create(createColumnDto);
+  async create(@Body() createColumnDto: CreateColumnDto) {
+    const newColumn = await this.columnService.create(createColumnDto);
 
     return {
       statusCode: HttpStatus.CREATED,
@@ -36,11 +36,11 @@ export class ColumnController {
 
   // 컬럼순서이동
   @Put(':id/position')
-  changePosition(
+  async changePosition(
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    const updatedColumn =  this.columnService.changePosition(+id, changePositionColumnDto);
+    const updatedColumn = await this.columnService.changePosition(+id, changePositionColumnDto);
 
     return {
       statusCode: HttpStatus.OK,
@@ -51,11 +51,11 @@ export class ColumnController {
 
   // 컬럼수정
   @Put(':id')
-  updateTitle(
+  async updateTitle(
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
-    const updatedColumn =  this.columnService.updateTitle(+id, updateColumnDto);
+    const updatedColumn = await this.columnService.updateTitle(+id, updateColumnDto);
 
     return {
       statusCode: HttpStatus.OK,
@@ -66,8 +66,8 @@ export class ColumnController {
 
   // 컬럼삭제
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    const deletedColumn =  this.columnService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const deletedColumn = await this.columnService.remove(+id);
 
     return {
       statusCode: HttpStatus.OK,
@@ -78,7 +78,13 @@ export class ColumnController {
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
   @Get()
-  findAll() {
-    return this.columnService.findAll();
+  async findAll() {
+    const columns = await this.columnService.findAll();
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '컬럼 조회 성공',
+      columns,
+    }; 
   }
 }
