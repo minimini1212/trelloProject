@@ -31,9 +31,9 @@ export class Columns {
   @Column()
   boardId: number;
 
-  // @ManyToOne((Type) => Board, (board) => board.columns)
-  // @JoinColumn()
-  // board: Board;
+  @ManyToOne((Type) => Board, (board) => board.columns)
+  @JoinColumn()
+  board: Board;
 
   @CreateDateColumn()
   createdAt: Date;

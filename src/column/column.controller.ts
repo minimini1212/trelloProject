@@ -16,7 +16,7 @@ import { UpdateColumnDto } from './dto/update-column.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 
-//@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @Controller('column')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
