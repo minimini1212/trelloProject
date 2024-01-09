@@ -15,18 +15,21 @@ export class CardController {
     return this.cardService.create(createCardDto);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('/:id')
   findAll(@Param('id') id: number) {
     return this.cardService.findAll(+id);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Delete('/:id')
   remove(@Param('id') id: string) {
     return this.cardService.delete(+id);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Put('/:id')
-  update(@Body() updateCardDto: UpdateCardDto, @Param('id') id: string) {
-    return this.cardService.update(updateCardDto,+id);
+  update(@Body() { managerId, ...updateCardDto}: { managerId: number } & UpdateCardDto, @Param('id') id: string) {
+    return this.cardService.update(updateCardDto, +id, managerId);
   }
 }
