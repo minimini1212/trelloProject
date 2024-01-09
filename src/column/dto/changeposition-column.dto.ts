@@ -1,6 +1,14 @@
 import { PickType } from "@nestjs/mapped-types";
 import { Columns } from "../entities/column.entity";
+import { Allow, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
-export class ChangePositionColumnDto extends PickType(Columns, [
-    'position',
-]) {}
+export class ChangePositionColumnDto {
+
+    @IsOptional()
+    @IsNumber()
+    preColumnId: number;
+
+    @IsOptional()
+    @IsNumber()
+    nextColumnId: number;
+  }

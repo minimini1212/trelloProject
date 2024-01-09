@@ -54,18 +54,60 @@ export class ColumnService {
     id: number,
     changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    const { position } = changePositionColumnDto;
-    const foundColumn = await this.columnRepository.findOne({
+    const { preColumnId, nextColumnId } = changePositionColumnDto;
+
+    const selectedColumn = await this.columnRepository.findOne({
       where: {
         id,
       },
     });
 
-    if (!foundColumn) {
+    if (!selectedColumn) {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
     }
 
-    await this.columnRepository.update({ id }, { position });
+    // 지정된 컬럼을 옮기고 난 후 왼쪽에 존재하는 컬럼
+    const preColumn = await this.columnRepository.findOne({
+      where: {
+        id: preColumnId,
+      },
+    });
+
+    // 지정된 컬럼을 옮기고 난 후 오론쪽에 존재하는 컬럼
+    const nextColumn = await this.columnRepository.findOne({
+      where: {
+        id: nextColumnId,
+      },
+    });
+
+    // 지정된 컬럼을 맨 왼쪽자리로 옮겼을 때
+    if (!preColumnId && nextColumnId) {
+      const nextColumnPosition = LexoRank.parse(nextColumn.position);
+
+      await this.columnRepository.update(
+        { id },
+        { position: nextColumnPosition.genPrev().toString() },
+      );
+    }
+    // 지정된 컬럼을 맨 오른쪽자리로 옮겼을 때
+    else if (preColumnId && !nextColumnId) {
+      const preColumnPosition = LexoRank.parse(preColumn.position);
+
+      await this.columnRepository.update(
+        { id },
+        { position: preColumnPosition.genNext().toString() },
+      );
+    }
+    // 지정된 컬럼을 중간자리로 옮겼을 때
+    else if (preColumnId && nextColumnId) {
+      const nextColumnPosition = LexoRank.parse(nextColumn.position);
+      const preColumnPosition = LexoRank.parse(preColumn.position);
+
+      await this.columnRepository.update(
+        { id },
+        { position: preColumnPosition.between(nextColumnPosition).toString() },
+      );
+    }
 
     return await this.columnRepository.find({
       order: {
@@ -78,6 +120,7 @@ export class ColumnService {
   // 컬럼 이름 수정
   async updateTitle(columnId: number, updateColumnDto: UpdateColumnDto) {
     const { title } = updateColumnDto;
+
     const foundColumn = await this.columnRepository.findOne({
       where: {
         id: columnId,
@@ -112,5 +155,14 @@ export class ColumnService {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
     }
     return await this.columnRepository.delete({ id: columnId });
+  }
+
+  // 전체 컬럼 조회(position 을 기준으로 'asc' 정렬이 되어있는 상태)
+  async findAll() {
+    return await this.columnRepository.find({
+      order: {
+        position: 'ASC',
+      },
+    });
   }
 }
