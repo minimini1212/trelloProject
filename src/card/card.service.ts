@@ -21,21 +21,19 @@ export class CardService {
 
   async create(createCardDto: CreateCardDto) {
 
-   this.cardRepository.save({
+   return this.cardRepository.save({
       column: { id: createCardDto.column_id },
       title: createCardDto.title,
       description: createCardDto.description,
       backgroundColor: createCardDto.backgroundColor,
       position: createCardDto.position,
     })
-    return 'Card Created'
   }
 
   async delete(cardId: number) {
     if (await this.cardRepository.findOneBy({ cardId }) === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.')
-    await this.cardRepository.delete(cardId)
-    return 'Card deleted'
+    return await this.cardRepository.delete(cardId)
   }
 
   async update(updateCardDto: UpdateCardDto, cardId: number, managerId: number) {
@@ -48,12 +46,11 @@ export class CardService {
 
     if (cards.manager.find((user) => user.id === managerId)) {
       console.log('abort')
-       await this.cardRepository
+       return await this.cardRepository
         .createQueryBuilder()
         .relation(Card, "manager")
         .of(cardId)
         .remove(managerId)
-       return 'Manager abort'
     }
       
     await this.cardRepository
@@ -61,7 +58,6 @@ export class CardService {
       .relation(Card, "manager")
       .of(cardId)
       .add(managerId)
-    await this.cardRepository.update(cardId, updateCardDto)
-    return 'Card updated'
+    return await this.cardRepository.update(cardId, updateCardDto)
   }
 }
