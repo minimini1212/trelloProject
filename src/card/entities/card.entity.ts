@@ -40,7 +40,7 @@ export class Card {
 
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @Column()
-  position: number;
+  position: string;
 
   @CreateDateColumn()
   createdAt: Date;

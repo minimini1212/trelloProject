@@ -17,7 +17,7 @@ export class CommentService {
     createCommentDto: CreateCommentDto,
   ): Promise<Comment> {
     return this.commentRepository.save({
-      cardId: createCommentDto.cardId,
+      cardId: cardId,
       comment: createCommentDto.comment,
     });
   }
@@ -42,7 +42,7 @@ export class CommentService {
     if ((await this.commentRepository.findOneBy({ commentId })) === null)
       throw new NotFoundException('해당 댓글이 존재하지 않습니다.');
     await this.commentRepository.update(commentId, updateCommentDto);
-    return 'Card updated';
+    return 'Comment updated';
   }
 
   async delete(commentId: number) {
