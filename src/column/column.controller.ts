@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   Put,
+  HttpStatus,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -24,7 +25,13 @@ export class ColumnController {
   // 컬럼생성
   @Post()
   create(@Body() createColumnDto: CreateColumnDto) {
-    return this.columnService.create(createColumnDto);
+    const newColumn =  this.columnService.create(createColumnDto);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '생성 성공',
+      newColumn,
+    };
   }
 
   // 컬럼순서이동
@@ -33,7 +40,13 @@ export class ColumnController {
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    return this.columnService.changePosition(+id, changePositionColumnDto);
+    const updatedColumn =  this.columnService.changePosition(+id, changePositionColumnDto);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '위치 이동 성공',
+      updatedColumn,
+    };
   }
 
   // 컬럼수정
@@ -42,13 +55,25 @@ export class ColumnController {
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
-    return this.columnService.updateTitle(+id, updateColumnDto);
+    const updatedColumn =  this.columnService.updateTitle(+id, updateColumnDto);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '이름 수정 성공',
+      updatedColumn,
+    };
   }
 
   // 컬럼삭제
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.columnService.remove(+id);
+    const deletedColumn =  this.columnService.remove(+id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '위치 이동 성공',
+      deletedColumn,
+    };
   }
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
