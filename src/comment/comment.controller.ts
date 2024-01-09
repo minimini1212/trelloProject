@@ -18,28 +18,34 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  @Post('card/:cardId')
+  create(
+    @Param('CardId') cardId: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.commentService.create(+cardId, createCommentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
+  @Get('card/:cardId')
+  findAll(@Param('cardId') cardId: number) {
+    return this.commentService.findAll(+cardId);
   }
 
-  @Get('/:id')
-  findOne(@Param('id') id: number) {
-    return this.commentService.findOne(+id);
+  @Get('card/:cardId/comment/:commentId')
+  findOne(@Param('cardId, commentId') cardId: number, commentId: number) {
+    return this.commentService.findOne(+cardId, +commentId);
   }
 
-  @Put('/:id')
-  update(@Param('id') id: number, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  @Put('card/:cardId/comment/:commentId')
+  update(
+    @Param('commentId') commentId: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    return this.commentService.update(+commentId, updateCommentDto);
   }
 
-  @Delete('/:id')
-  remove(@Param('id') id: number) {
-    return this.commentService.delete(+id);
+  @Delete('card/:cardId/comment/:commentId')
+  remove(@Param('commentId') commentId: number) {
+    return this.commentService.delete(+commentId);
   }
 }
