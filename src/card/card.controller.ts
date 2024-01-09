@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Put } from '@nestjs/common';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
+import { update } from 'lodash';
 import { UpdateCardDto } from './dto/update-card.dto';
+
 
 @Controller('card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post()
   create(@Body() createCardDto: CreateCardDto) {
     return this.cardService.create(createCardDto);
   }
 
-  @Get()
-  findAll() {
-    return this.cardService.findAll();
+  @HttpCode(HttpStatus.OK)
+  @Get('/:id')
+  findAll(@Param('id') id: number) {
+    return this.cardService.findAll(+id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
-    return this.cardService.update(+id, updateCardDto);
-  }
-
-  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @Delete('/:id')
   remove(@Param('id') id: string) {
-    return this.cardService.remove(+id);
+    return this.cardService.delete(+id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put('/:id')
+  update(@Body() { managerId, ...updateCardDto}: { managerId: number } & UpdateCardDto, @Param('id') id: string) {
+    return this.cardService.update(updateCardDto, +id, managerId);
   }
 }
