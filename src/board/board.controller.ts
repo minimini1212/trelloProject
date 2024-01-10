@@ -12,6 +12,24 @@ export class BoardController {
     return this.boardService.create(createBoardDto);
   }
 
+  //보드 수정
+  @Put(':boardId')
+  async update(
+    @Param('boardId') boardId: number,
+    @Req() req,
+    @Body() updateBoardDto: UpdateBoardDto,
+  ) {
+    const { id: userId } = req.user;
+    const updatedBoard = await this.boardService.update(
+      boardId,
+      userId,
+      updateBoardDto,
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      message: '보드가 수정 되었습니다.',
+      updatedBoard,
+    };
   @Get()
   findAll() {
     return this.boardService.findAll();
