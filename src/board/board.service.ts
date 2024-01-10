@@ -33,6 +33,13 @@ export class BoardService {
 
     const savedBoard = await this.boardRepository.save(board);
 
+    const newBoardUser = this.boardUserRepository.create({
+      userId: creatorId,
+      boardId: savedBoard.boardId,
+    });
+
+    await this.boardUserRepository.save(newBoardUser);
+
     return savedBoard;
   }
 
