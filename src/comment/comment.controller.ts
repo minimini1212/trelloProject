@@ -19,33 +19,57 @@ export class CommentController {
 
   @HttpCode(HttpStatus.OK)
   @Post('card/:cardId')
-  create(
+  async create(
     @Param('CardId') cardId: number,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.commentService.create(+cardId, createCommentDto);
+    await this.commentService.create(+cardId, createCommentDto);
+    return {
+      status: HttpStatus.OK,
+      message: '댓글 생성에 성공하였습니다.',
+    };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('card/:cardId')
-  findAll(@Param('cardId') cardId: number) {
-    return this.commentService.findAll(+cardId);
+  async findAll(@Param('cardId') cardId: number) {
+    const comments = await this.commentService.findAll(+cardId);
+    return {
+      status: HttpStatus.OK,
+      comments,
+    };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('card/:cardId/comment/:commentId')
-  findOne(@Param('cardId, commentId') cardId: number, commentId: number) {
-    return this.commentService.findOne(+cardId, +commentId);
+  async findOne(@Param('cardId, commentId') cardId: number, commentId: number) {
+    const comment = await this.commentService.findOne(+cardId, +commentId);
+    return {
+      status: HttpStatus.OK,
+      comment,
+    };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Put('card/:cardId/comment/:commentId')
-  update(
+  async update(
     @Param('commentId') commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
-    return this.commentService.update(+commentId, updateCommentDto);
+    await this.commentService.update(+commentId, updateCommentDto);
+    return {
+      status: HttpStatus.OK,
+      message: '댓글 수정에 성공하였습니다.',
+    };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Delete('card/:cardId/comment/:commentId')
-  remove(@Param('commentId') commentId: number) {
-    return this.commentService.delete(+commentId);
+  async remove(@Param('commentId') commentId: number) {
+    await this.commentService.delete(+commentId);
+    return {
+      status: HttpStatus.OK,
+      message: '댓글 삭제에 성공하였습니다.',
+    };
   }
 }

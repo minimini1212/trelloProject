@@ -41,14 +41,12 @@ export class CommentService {
   async update(commentId: number, updateCommentDto: UpdateCommentDto) {
     if ((await this.commentRepository.findOneBy({ commentId })) === null)
       throw new NotFoundException('해당 댓글이 존재하지 않습니다.');
-    await this.commentRepository.update(commentId, updateCommentDto);
-    return 'Comment updated';
+    return await this.commentRepository.update(commentId, updateCommentDto);
   }
 
   async delete(commentId: number) {
     if ((await this.commentRepository.findOneBy({ commentId })) === null)
       throw new NotFoundException('해당 댓글이 존재하지 않습니다.');
-    await this.commentRepository.delete(commentId);
-    return 'Comment deleted';
+    return await this.commentRepository.delete(commentId);
   }
 }
