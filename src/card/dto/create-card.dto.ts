@@ -16,11 +16,4 @@ export class CreateCardDto {
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @IsString()
   backgroundColor: string;
-
-  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
-  @IsNumber()
-  position: string;
-
-  @IsDate()
-  deadline: Date;
 }

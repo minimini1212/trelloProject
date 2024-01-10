@@ -19,14 +19,12 @@ export class CardService {
   ) {}
 
   async findAll(columnId: number) {
-    if (
-      (await this.cardRepository.findOneBy({ column: { id: columnId } })) ===
-      null
-    )
-      throw new NotFoundException('해당 카드들이 존재하지 않습니다.');
-    return await this.cardRepository.find({
+    const cards = await this.cardRepository.find({
       where: { column: { id: columnId } },
     });
+    if (cards === null) 
+      throw new NotFoundException('해당 컬룸이 존재하지 않습니다.');
+    return cards
   }
 
   async create(createCardDto: CreateCardDto): Promise<Card> {
@@ -48,7 +46,7 @@ export class CardService {
     }
 
     return this.cardRepository.save({
-      columnId,
+      column: { id: columnId },
       title,
       description,
       backgroundColor,

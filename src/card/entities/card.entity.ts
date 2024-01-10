@@ -10,6 +10,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
@@ -45,13 +46,12 @@ export class Card {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Columns, (column) => column.cards)
-  @JoinColumn({
-    name: "columnId",
-    referencedColumnName: "id",
-    foreignKeyConstraintName: "fk_column_id"
-  })
+  @ManyToOne(() => Columns)
+  @JoinColumn({ name: 'columnId', referencedColumnName: 'id'})
   column: Columns;
+
+  @RelationId((card: Card) => card.column)
+  columnId: number
 
   @ManyToMany(() => User, { cascade: true })
   @JoinTable()
