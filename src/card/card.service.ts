@@ -68,7 +68,7 @@ export class CardService {
     const card = await this.cardRepository.findOne({
       where: { cardId },
       relations: {
-        column:  true,
+        column: true,
       },
     });
 
@@ -143,7 +143,7 @@ export class CardService {
       const prevCardPosition = LexoRank.parse(prevCard.position);
       await this.cardRepository.update(
         { cardId },
-        { position: prevCardPosition.genPrev().toString() },
+        { position: prevCardPosition.genNext().toString() },
       );
     } else {
       const nextCardPosition = LexoRank.parse(nextCard.position);
