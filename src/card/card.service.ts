@@ -17,7 +17,7 @@ export class CardService {
   ) {}
   async findAll(columnId: number) {
     const cards = await this.cardRepository.find({
-      where: { column: { id: columnId } },
+      where: { columnId },
       order: {
         position: 'ASC',
       },
@@ -46,7 +46,7 @@ export class CardService {
     }
 
     return this.cardRepository.save({
-      column: { id: columnId },
+      columnId,
       title,
       description,
       backgroundColor,
@@ -80,7 +80,7 @@ export class CardService {
     if (card === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
     const cards = await this.cardRepository.findOne({
-      where: { cardId: cardId },
+      where: { cardId },
       relations: { manager: true },
     });
 
