@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { BoardUser } from './board-user.entity';
 
 @Entity({
   name: 'boards',
@@ -46,7 +47,7 @@ export class Board {
 
   @ManyToOne((type) => User, (user) => user.createdBoards)
   creator: User;
- 
-  // @ManyToMany((type) => User, (user) => user.joinedBoards)
-  // members: User[];
+
+  @OneToMany((type) => BoardUser, (boardUser) => boardUser.board)
+  boardUsers: BoardUser[]
 }

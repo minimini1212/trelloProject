@@ -66,10 +66,11 @@ export class CardController {
   @HttpCode(HttpStatus.OK)
   @Put('/:id/deadline')
   async updateDeadline(
-    { managerId, ...deadlineCardDto }: { managerId: number } & DeadlineCardDto,
+    @Body()
+    deadlineCardDto: DeadlineCardDto,
     @Param('id') id: string,
   ) {
-    await this.cardService.updateDeadline(deadlineCardDto, +id, managerId);
+    await this.cardService.updateDeadline(deadlineCardDto, +id);
     return {
       status: HttpStatus.OK,
       message: '카드 데드라인 수정에 성공하였습니다.',

@@ -72,13 +72,11 @@ export class BoardService {
     const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
 
-    const users = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
 
-    if (users.length === 0) {
+    if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
-
-    const user = users[0];
 
     const checkBoardUser = await this.boardUserRepository.findOne({
       where: { userId: user.id, boardId },

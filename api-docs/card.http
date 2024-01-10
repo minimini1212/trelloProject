@@ -1,14 +1,16 @@
 @url = http://localhost:3000/card
-@cardId = 1
+@cardId = 2
 @columnId = 1
 @managerId = 1
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODg3MzAxLCJleHAiOjE3MDQ4OTA5MDF9.JPVRDezMH42S5D4MYvduvCwuvQRrRn1wtUV57wZmFS0
 
 
 GET {{url}}/{{columnId}}
-
+Authorization: {{token}}
 ###
 POST {{url}}
 Content-Type: application/json
+Authorization: {{token}}
 
 {
     "columnId": {{columnId}},
@@ -21,6 +23,7 @@ Content-Type: application/json
 ###
 PUT {{url}}/{{cardId}}
 Content-Type: application/json
+Authorization: {{token}}
 
 {
     "title": "시험",
@@ -30,6 +33,22 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/{{cardId}}
+DELETE {{url}}/5
+Authorization: {{token}}
 
+###카드 데드라인 지정 / Thunder Client로 실행 필수(Rest 오류남)
+PUT {{url}}/2/deadline
+Authorization: {{token}}
 
+{
+    "deadline": "2024-02-20T00:00:00.000Z"
+}
+
+###카드 위치변경
+PUT {{url}}/4/position
+Authorization: {{token}}
+
+{
+    "prevCardId": null,
+    "nextCardId": 2
+}
