@@ -1,0 +1,31 @@
+@url = http://localhost:3000/card
+@cardId = 2
+@commentId = 1
+
+###findAll
+GET {{url}}/{{cardId}}
+
+###findOne
+GET {{url}}/{{cardId}}/{{commentId}}
+
+###create
+POST {{url}}/{{cardId}}
+Content-Type: application/json
+
+{
+    "cardid": {{cardId}}
+    "comment": "끝내주게 숨쉬기",
+}
+
+###update
+PUT {{url}}/{{cardId}}/{{commentId}}
+Content-Type: application/json
+
+{
+    "comment": "작살나게 밥먹기",
+}
+
+###delete
+DELETE {{url}}/{{cardId}}/{{commentId}}
+
+
