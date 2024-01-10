@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,14 +17,17 @@ export class ColumnService {
   ) {}
 
   // 컬럼 생성
-  async create(boardId, createColumnDto: CreateColumnDto) {
+  async create(boardId, createColumnDto: CreateColumnDto, userId) {
     const { title } = createColumnDto;
 
-    const board = await this.boardService.verifyBoardById(boardId)
+    const board = await this.boardService.verifyBoardById(boardId);
 
     if (!board) {
       throw new NotFoundException('해당 보드가 존재하지 않습니다.');
     }
+
+    // 컬럼에 접근 권한이 있는지 없는지 확인
+    await this.boardService.checkMember(boardId, userId);
 
     // 밑에 있는 함수 findAll 실행 값을 할당
     const foundColumns = await this.findAll(boardId);
@@ -38,19 +38,19 @@ export class ColumnService {
       return await this.columnRepository.save({
         title,
         position,
-      });
-    } else {
-      const position = LexoRank.parse(
-        foundColumns[foundColumns.length - 1].position,
-      );
-      const NewPosition = position.genNext().toString();
-
-      return await this.columnRepository.save({
-        title,
-        position: NewPosition,
         boardId,
       });
     }
+    const position = LexoRank.parse(
+      foundColumns[foundColumns.length - 1].position,
+    );
+    const NewPosition = position.genNext().toString();
+
+    return await this.columnRepository.save({
+      title,
+      position: NewPosition,
+      boardId,
+    });
   }
 
   // 컬럼 순서 이동
@@ -58,8 +58,15 @@ export class ColumnService {
     boardId: number,
     id: number,
     changePositionColumnDto: ChangePositionColumnDto,
+    userId,
   ) {
     const { preColumnId, nextColumnId } = changePositionColumnDto;
+
+    const board = await this.boardService.verifyBoardById(boardId);
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
 
     // id로 컬럼 조회하는 함수 실행값 할당
     const selectedColumn = await this.findOne(id);
@@ -67,6 +74,9 @@ export class ColumnService {
     if (!selectedColumn) {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
     }
+
+    // 컬럼에 접근 권한이 있는지 없는지 확인
+    await this.boardService.checkMember(boardId, userId);
 
     // id로 컬럼 조회하는 함수 실행값 할당
     // 지정된 컬럼을 옮기고 난 후 왼쪽에 존재하는 컬럼
@@ -114,8 +124,15 @@ export class ColumnService {
     boardId: number,
     columnId: number,
     updateColumnDto: UpdateColumnDto,
+    userId,
   ) {
     const { title } = updateColumnDto;
+
+    const board = await this.boardService.verifyBoardById(boardId);
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
 
     // id로 컬럼 조회하는 함수 실행값 할당
     const foundColumn = await this.findOne(columnId);
@@ -123,6 +140,9 @@ export class ColumnService {
     if (!foundColumn) {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
     }
+
+    // 컬럼에 접근 권한이 있는지 없는지 확인
+    await this.boardService.checkMember(boardId, userId);
 
     return await this.columnRepository.save({
       id: columnId,
@@ -131,20 +151,36 @@ export class ColumnService {
   }
 
   // 컬럼 삭제
-  async remove(boardId: number, columnId: number) {
+  async remove(columnId: number, boardId: number, userId) {
+    const board = await this.boardService.verifyBoardById(boardId);
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
+
     // id로 컬럼 조회하는 함수 실행값 할당
     const foundColumn = await this.findOne(columnId);
 
     if (!foundColumn) {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
+      4;
     }
     await this.columnRepository.softDelete({ id: columnId });
+
+    // 컬럼에 접근 권한이 있는지 없는지 확인
+    await this.boardService.checkMember(boardId, userId);
 
     return foundColumn;
   }
 
   // 전체 컬럼 조회(position 을 기준으로 'asc' 정렬이 되어있는 상태)
   async findAll(boardId: number) {
+    const board = await this.boardService.verifyBoardById(boardId);
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
+
     return await this.columnRepository.find({
       where: { boardId, deletedAt: null },
       order: {

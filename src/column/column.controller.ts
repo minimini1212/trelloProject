@@ -27,8 +27,14 @@ export class ColumnController {
   async create(
     @Param('boardId') boardId: string,
     @Body() createColumnDto: CreateColumnDto,
+    @Req() req,
   ) {
-    const newColumn = await this.columnService.create(+boardId, createColumnDto);
+    const userId = req.user.id;
+    const newColumn = await this.columnService.create(
+      +boardId,
+      createColumnDto,
+      +userId,
+    );
 
     return {
       statusCode: HttpStatus.CREATED,
@@ -43,11 +49,15 @@ export class ColumnController {
     @Param('boardId') boardId: string,
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
+    @Req() req,
   ) {
+    const userId = req.user.id;
+
     const updatedColumn = await this.columnService.changePosition(
       +boardId,
       +id,
       changePositionColumnDto,
+      +userId,
     );
 
     return {
@@ -63,11 +73,14 @@ export class ColumnController {
     @Param('boardId') boardId: string,
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
+    @Req() req,
   ) {
+    const userId = req.user.id;
     const updatedColumn = await this.columnService.updateTitle(
       +boardId,
       +id,
       updateColumnDto,
+      +userId,
     );
 
     return {
@@ -79,8 +92,17 @@ export class ColumnController {
 
   // 컬럼삭제
   @Delete(':id')
-  async remove(@Param('boardId') boardId: string, @Param('id') id: string) {
-    const deletedColumn = await this.columnService.remove(+id, +boardId);
+  async remove(
+    @Param('boardId') boardId: string,
+    @Param('id') id: string,
+    @Req() req,
+  ) {
+    const userId = req.user.id;
+    const deletedColumn = await this.columnService.remove(
+      +id,
+      +boardId,
+      +userId,
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -91,7 +113,7 @@ export class ColumnController {
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
   @Get()
-  async findAll(@Param('boardId') boardId: string) {
+  async findAll(@Param('boardId') boardId: string, @Req() req) {
     const columns = await this.columnService.findAll(+boardId);
 
     return {
