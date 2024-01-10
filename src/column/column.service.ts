@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,24 +6,31 @@ import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Columns } from './entities/column.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 import { LexoRank } from 'lexorank';
+import { BoardService } from 'src/board/board.service';
 
 @Injectable()
 export class ColumnService {
   constructor(
     @InjectRepository(Columns)
     private readonly columnRepository: Repository<Columns>,
-    private readonly dataSource: DataSource,
+    private readonly boardService: BoardService,
   ) {}
 
   // 컬럼 생성
   async create(boardId, createColumnDto: CreateColumnDto) {
     const { title } = createColumnDto;
 
+    const board = await this.boardService.verifyBoardById(boardId)
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
+
     // 밑에 있는 함수 findAll 실행 값을 할당
-    const foundColumns = await this.findAll();
+    const foundColumns = await this.findAll(boardId);
 
     if (foundColumns.length < 1) {
       const position = LexoRank.middle().toString();
@@ -49,6 +55,7 @@ export class ColumnService {
 
   // 컬럼 순서 이동
   async changePosition(
+    boardId: number,
     id: number,
     changePositionColumnDto: ChangePositionColumnDto,
   ) {
@@ -99,11 +106,15 @@ export class ColumnService {
     }
 
     // 맨 밑에 있는 함수 findAll 실행 값 리턴
-    return await this.findAll();
+    return await this.findAll(boardId);
   }
 
   // 컬럼 이름 수정
-  async updateTitle(columnId: number, updateColumnDto: UpdateColumnDto) {
+  async updateTitle(
+    boardId: number,
+    columnId: number,
+    updateColumnDto: UpdateColumnDto,
+  ) {
     const { title } = updateColumnDto;
 
     // id로 컬럼 조회하는 함수 실행값 할당
@@ -120,7 +131,7 @@ export class ColumnService {
   }
 
   // 컬럼 삭제
-  async remove(columnId: number) {
+  async remove(boardId: number, columnId: number) {
     // id로 컬럼 조회하는 함수 실행값 할당
     const foundColumn = await this.findOne(columnId);
 
@@ -133,9 +144,9 @@ export class ColumnService {
   }
 
   // 전체 컬럼 조회(position 을 기준으로 'asc' 정렬이 되어있는 상태)
-  async findAll() {
+  async findAll(boardId: number) {
     return await this.columnRepository.find({
-      where: { deletedAt: null },
+      where: { boardId, deletedAt: null },
       order: {
         position: 'ASC',
       },
@@ -147,7 +158,7 @@ export class ColumnService {
     return await this.columnRepository.findOne({
       where: {
         id: columnId,
-        deletedAt: null
+        deletedAt: null,
       },
     });
   }
