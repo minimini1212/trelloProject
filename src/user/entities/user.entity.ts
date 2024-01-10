@@ -51,13 +51,13 @@ export class User {
   @OneToMany((type) => Board, (board) => board.creator)
   createdBoards: Board[];
 
-  @ManyToMany((type) => Board, (board) => board.members)
-  @JoinTable({
-    name: 'boardUsers',
-    joinColumn: { name: 'userId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'boardId', referencedColumnName: 'boardId' },
-  })
-  joinedBoards: Board[];
+  // @ManyToMany((type) => Board, (board) => board.members)
+  // @JoinTable({
+  //   name: 'boardUsers',
+  //   joinColumn: { name: 'userId', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'boardId', referencedColumnName: 'boardId' },
+  // })
+  // joinedBoards: Board[];
 
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments: Comment[];

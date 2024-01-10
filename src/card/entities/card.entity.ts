@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -18,9 +19,6 @@ import { Comment } from 'src/comment/entities/comment.entity';
 export class Card {
   @PrimaryGeneratedColumn()
   cardId: number;
-
-  @Column()
-  columnId: number;
 
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @Column()
@@ -38,7 +36,7 @@ export class Card {
   @Column()
   position: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   deadline: Date;
 
   @CreateDateColumn()
@@ -48,6 +46,11 @@ export class Card {
   updatedAt: Date;
 
   @ManyToOne(() => Columns, (column) => column.cards)
+  @JoinColumn({
+    name: "columnId",
+    referencedColumnName: "id",
+    foreignKeyConstraintName: "fk_column_id"
+  })
   column: Columns;
 
   @ManyToMany(() => User, { cascade: true })

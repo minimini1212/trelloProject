@@ -46,7 +46,7 @@ export class Board {
 
   @ManyToOne((type) => User, (user) => user.createdBoards)
   creator: User;
-
-  @ManyToMany((type) => User, (user) => user.joinedBoards)
-  members: User[];
+ 
+  // @ManyToMany((type) => User, (user) => user.joinedBoards)
+  // members: User[];
 }
