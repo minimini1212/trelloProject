@@ -10,5 +10,6 @@ import { BoardUser } from './entities/board-user.entity';
   imports: [TypeOrmModule.forFeature([Board, BoardUser]), UserModule],
   controllers: [BoardController],
   providers: [BoardService],
+  exports: [BoardService],
 })
 export class BoardModule {}
