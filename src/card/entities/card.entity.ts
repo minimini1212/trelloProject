@@ -12,18 +12,15 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Entity('Cards')
 export class Card {
   @PrimaryGeneratedColumn()
   cardId: number;
 
-  @ManyToOne(() => Columns, (column) => column.id)
-  column: Columns;
-
-  @ManyToMany(() => User, { cascade: true })
-  @JoinTable()
-  manager: User[];
+  @Column()
+  columnId: number;
 
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @Column()
@@ -49,4 +46,14 @@ export class Card {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Columns, (column) => column.cards)
+  column: Columns;
+
+  @ManyToMany(() => User, { cascade: true })
+  @JoinTable()
+  manager: User[];
+
+  @OneToMany((type) => Comment, (comment) => comment.card)
+  comments: Comment[];
 }
