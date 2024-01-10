@@ -78,7 +78,7 @@ export class BoardService {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
 
-    const user = users[0]; // 첫 번째 사용자 선택
+    const user = users[0];
 
     const checkBoardUser = await this.boardUserRepository.findOne({
       where: { userId: user.id, boardId },
