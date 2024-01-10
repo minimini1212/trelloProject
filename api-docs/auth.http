@@ -1,3 +1,5 @@
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NjEyNzk4LCJleHAiOjE3MDUyMTc1OTh9.j4XveEQUKolKNve9ZmJz9giAE04ygTJrI0qlmWkDQ1w
+
 // 회원가입
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
@@ -7,7 +9,7 @@ Content-Type: application/json
   "password": "123456",
   "passwordConfirm": "123456",
   "name": "tester1",
-  # "image": "data:image/jpeg;base64,iVBORw0KG...",
+  "image": "data:image/jpeg;base64,iVBORw0KG...",
   "description": "hi"
 }
 
@@ -20,8 +22,6 @@ Content-Type: application/json
   "email": "tester1@test.com",
   "password": "123456"
 }
-
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NjEyNzk4LCJleHAiOjE3MDUyMTc1OTh9.j4XveEQUKolKNve9ZmJz9giAE04ygTJrI0qlmWkDQ1w
 
 ###
 // 회원 탈퇴

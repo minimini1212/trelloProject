@@ -1,4 +1,4 @@
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODgzNTc5LCJleHAiOjE3MDQ4ODcxNzl9.xM3M0LA3r2rznN5M7Ujv8ITfhfNr_FB8QMJpViBAeEU
 
 ###
 // 사용자 정보 조회

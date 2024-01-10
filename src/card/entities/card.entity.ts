@@ -47,11 +47,11 @@ export class Card {
   updatedAt: Date;
 
   @ManyToOne(() => Columns)
-  @JoinColumn({ name: 'columnId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'columnId', referencedColumnName: 'id' })
   column: Columns;
 
   @RelationId((card: Card) => card.column)
-  columnId: number
+  columnId: number;
 
   @ManyToMany(() => User, { cascade: true })
   @JoinTable()

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,21 +9,22 @@ import { DeadlineCardDto } from './dto/deadline-card.dto';
 import { ChangePositionCardDto } from './dto/changeposition-card.dto';
 import { BoardService } from 'src/board/board.service';
 
-
 @Injectable()
 export class CardService {
   constructor(
     @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
-    private boardService: BoardService
-
+    private boardService: BoardService,
   ) {}
   async findAll(columnId: number) {
     const cards = await this.cardRepository.find({
       where: { column: { id: columnId } },
+      order: {
+        position: 'ASC',
+      },
     });
-    if (cards === null) 
+    if (cards === null)
       throw new NotFoundException('해당 컬룸이 존재하지 않습니다.');
-    return cards
+    return cards;
   }
 
   async create(createCardDto: CreateCardDto): Promise<Card> {
@@ -68,19 +65,18 @@ export class CardService {
     cardId: number,
     managerId: number,
   ) {
-    const card = (await this.cardRepository.findOne({ 
+    const card = await this.cardRepository.findOne({
       where: { cardId },
-      select: { column: {
-        boardId: true
-      }}
-    }))
+      select: {
+        column: {
+          boardId: true,
+        },
+      },
+    });
 
-    await this.boardService.checkMember(
-      card.column.boardId, 
-      managerId,
-    )
-    
-    if ( card === null)
+    await this.boardService.checkMember(card.column.boardId, managerId);
+
+    if (card === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
     const cards = await this.cardRepository.findOne({
       where: { cardId: cardId },
@@ -104,22 +100,17 @@ export class CardService {
     return await this.cardRepository.update(cardId, updateCardDto);
   }
 
-  async updateDeadline(
-    deadlineCardDto: DeadlineCardDto,
-    cardId: number,
-    managerId: number,
-  ) {
+  async updateDeadline(deadlineCardDto: DeadlineCardDto, cardId: number) {
     if ((await this.cardRepository.findOneBy({ cardId })) === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
-    const cards = await this.cardRepository.findOne({
-      where: { cardId: cardId },
-    });
 
-    if (cards.manager.find((user) => user.id === managerId)) {
-      return await this.cardRepository.update(cardId, deadlineCardDto);
-    } else {
-      throw new UnauthorizedException('데드라인을 수정할 권한이 없습니다.');
-    }
+    // const card = await this.cardRepository.findOne({
+    //   where: { cardId: cardId },
+    // });
+    // if (card === null)
+    //   throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+
+    return await this.cardRepository.update(cardId, deadlineCardDto);
   }
 
   async changePosition(
@@ -138,14 +129,14 @@ export class CardService {
       where: { cardId: nextCardId },
     });
 
-    if (!prevCard) {
+    if (!prevCardId) {
       // 카드를 제일 위로 올릴 때
       const nextCardPosition = LexoRank.parse(nextCard.position);
       await this.cardRepository.update(
         { cardId },
         { position: nextCardPosition.genPrev().toString() },
       );
-    } else if (!nextCard) {
+    } else if (!nextCardId) {
       // 카드를 제일 아래로 내릴 때
       const prevCardPosition = LexoRank.parse(prevCard.position);
       await this.cardRepository.update(

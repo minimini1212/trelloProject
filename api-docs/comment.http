@@ -1,31 +1,35 @@
 @url = http://localhost:3000/card
 @cardId = 2
 @commentId = 1
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODgzNTc5LCJleHAiOjE3MDQ4ODcxNzl9.xM3M0LA3r2rznN5M7Ujv8ITfhfNr_FB8QMJpViBAeEU
 
 ###findAll
 GET {{url}}/{{cardId}}
+Authorization: {{token}}
 
 ###findOne
 GET {{url}}/{{cardId}}/{{commentId}}
+Authorization: {{token}}
 
 ###create
 POST {{url}}/{{cardId}}
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-    "cardid": {{cardId}}
-    "comment": "끝내주게 숨쉬기",
+    "comment": "끝내주게 숨쉬기"
 }
 
 ###update
 PUT {{url}}/{{cardId}}/{{commentId}}
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-    "comment": "작살나게 밥먹기",
+    "comment": "작살나게 밥먹기"
 }
 
 ###delete
 DELETE {{url}}/{{cardId}}/{{commentId}}
-
+Authorization: {{token}}
 

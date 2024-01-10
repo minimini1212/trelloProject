@@ -41,7 +41,7 @@ export class CommentController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('card/:cardId/comment/:commentId')
+  @Get('card/:cardId/:commentId')
   async findOne(@Param('cardId, commentId') cardId: number, commentId: number) {
     const comment = await this.commentService.findOne(+cardId, +commentId);
     return {
@@ -51,7 +51,7 @@ export class CommentController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('card/:cardId/comment/:commentId')
+  @Put('card/:cardId/:commentId')
   async update(
     @Param('commentId') commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
@@ -64,7 +64,7 @@ export class CommentController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Delete('card/:cardId/comment/:commentId')
+  @Delete('card/:cardId/:commentId')
   async remove(@Param('commentId') commentId: number) {
     await this.commentService.delete(+commentId);
     return {
