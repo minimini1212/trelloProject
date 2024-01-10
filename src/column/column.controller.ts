@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   Put,
+  HttpStatus,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -38,7 +39,7 @@ export class ColumnController {
 
   // 컬럼순서이동
   @Put(':id/position')
-  changePosition(
+  async changePosition(
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
@@ -56,7 +57,7 @@ export class ColumnController {
 
   // 컬럼수정
   @Put(':id')
-  updateTitle(
+  async updateTitle(
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
@@ -74,8 +75,14 @@ export class ColumnController {
 
   // 컬럼삭제
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.columnService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const deletedColumn = await this.columnService.remove(+id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '컬럼 삭제 성공',
+      deletedColumn,
+    };
   }
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
