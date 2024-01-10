@@ -1,39 +1,52 @@
-import { User } from "src/user/entities/user.entity"
-import { Columns }from "src/column/entities/column.entity"
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
-import { IsNotEmpty } from "class-validator"
+import { User } from 'src/user/entities/user.entity';
+import { Columns } from 'src/column/entities/column.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity('Cards')
 export class Card {
-    @PrimaryGeneratedColumn()
-    cardId: number
+  @PrimaryGeneratedColumn()
+  cardId: number;
 
-    @ManyToOne(() => Columns, (column) => column.id)
-    column: Columns
+  @ManyToOne(() => Columns, (column) => column.id)
+  column: Columns;
 
-    @ManyToMany(() => User, { cascade: true })
-    @JoinTable()
-    manager: User[]
+  @ManyToMany(() => User, { cascade: true })
+  @JoinTable()
+  manager: User[];
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column()
-    title: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column()
+  title: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column('text')
-    description: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column('text')
+  description: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column('')
-    backgroundColor: string
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column('')
+  backgroundColor: string;
 
-    @IsNotEmpty({ message: "비어 있는 항목이 있습니다." })
-    @Column()
-    position: number
+  @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
+  @Column()
+  position: string;
 
-    @CreateDateColumn()
-    createdAt: Date
+  @Column({ type: 'timestamptz' })
+  deadline: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

@@ -1,9 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Put,
+} from '@nestjs/common';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
-import { update } from 'lodash';
 import { UpdateCardDto } from './dto/update-card.dto';
-
+import { DeadlineCardDto } from './dto/deadline-card.dto';
+import { ChangePositionCardDto } from './dto/changeposition-card.dto';
 
 @Controller('card')
 export class CardController {
@@ -11,25 +22,68 @@ export class CardController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  create(@Body() createCardDto: CreateCardDto) {
-    return this.cardService.create(createCardDto);
+  async create(@Body() createCardDto: CreateCardDto) {
+    await this.cardService.create(createCardDto);
+    return {
+      status: HttpStatus.OK,
+      message: '카드 생성에 성공하였습니다.',
+    };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get('/:id')
-  findAll(@Param('id') id: number) {
-    return this.cardService.findAll(+id);
+  async findAll(@Param('id') id: number) {
+    const cards = await this.cardService.findAll(+id);
+    return {
+      status: HttpStatus.OK,
+      cards,
+    };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete('/:id')
-  remove(@Param('id') id: string) {
-    return this.cardService.delete(+id);
+  async remove(@Param('id') id: string) {
+    await this.cardService.delete(+id);
+    return {
+      status: HttpStatus.OK,
+      message: '카드 삭제에 성공하였습니다.',
+    };
+  }
+
+  @Put('/:id')
+  async update(
+    @Body()
+    { managerId, ...updateCardDto }: { managerId: number } & UpdateCardDto,
+    @Param('id') id: string,
+  ) {
+    await this.cardService.update(updateCardDto, +id, managerId);
+    return {
+      status: HttpStatus.OK,
+      message: '카드 수정에 성공하였습니다.',
+    };
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('/:id')
-  update(@Body() { managerId, ...updateCardDto}: { managerId: number } & UpdateCardDto, @Param('id') id: string) {
-    return this.cardService.update(updateCardDto, +id, managerId);
+  @Put('/:id/deadline')
+  async updateDeadline(
+    { managerId, ...deadlineCardDto }: { managerId: number } & DeadlineCardDto,
+    @Param('id') id: string,
+  ) {
+    await this.cardService.updateDeadline(deadlineCardDto, +id, managerId);
+    return {
+      status: HttpStatus.OK,
+      message: '카드 데드라인 수정에 성공하였습니다.',
+    };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put(':id/position')
+  async changePosition(
+    @Param('id') id: string,
+    @Body() changePositionCardDto: ChangePositionCardDto,
+  ) {
+    await this.cardService.changePosition(+id, changePositionCardDto);
+    return {
+      status: HttpStatus.OK,
+      message: '카드 위치가 변경되었습니다.',
+    };
   }
 }

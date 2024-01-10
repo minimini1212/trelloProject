@@ -9,7 +9,6 @@ import {
   Req,
   UseGuards,
   Put,
-  HttpStatus,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -18,14 +17,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('column')
+@Controller('board/:boardId/column')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   // 컬럼생성
   @Post()
-  async create(@Body() createColumnDto: CreateColumnDto) {
-    const newColumn = await this.columnService.create(createColumnDto);
+  async create(
+    @Param('boardId') boardId: string,
+    @Body() createColumnDto: CreateColumnDto,
+  ) {
+    const newColumn = await this.columnService.create(+boardId, createColumnDto);
 
     return {
       statusCode: HttpStatus.CREATED,
@@ -36,11 +38,14 @@ export class ColumnController {
 
   // 컬럼순서이동
   @Put(':id/position')
-  async changePosition(
+  changePosition(
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    const updatedColumn = await this.columnService.changePosition(+id, changePositionColumnDto);
+    const updatedColumn = await this.columnService.changePosition(
+      +id,
+      changePositionColumnDto,
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -51,11 +56,14 @@ export class ColumnController {
 
   // 컬럼수정
   @Put(':id')
-  async updateTitle(
+  updateTitle(
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
-    const updatedColumn = await this.columnService.updateTitle(+id, updateColumnDto);
+    const updatedColumn = await this.columnService.updateTitle(
+      +id,
+      updateColumnDto,
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -66,14 +74,8 @@ export class ColumnController {
 
   // 컬럼삭제
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const deletedColumn = await this.columnService.remove(+id);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: '컬럼 삭제 성공',
-      deletedColumn,
-    };
+  remove(@Param('id') id: string) {
+    return this.columnService.remove(+id);
   }
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
@@ -85,6 +87,6 @@ export class ColumnController {
       statusCode: HttpStatus.OK,
       message: '컬럼 조회 성공',
       columns,
-    }; 
+    };
   }
 }

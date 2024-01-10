@@ -4,15 +4,15 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ManyToOne } from 'typeorm';
 
 export class UpdateCardDto extends PartialType(CreateCardDto) {
-    @IsString()
-    title: string
+  @IsString()
+  title: string;
 
-    @IsString()
-    description: string
+  @IsString()
+  description: string;
 
-    @IsString()     
-    backgroundColor: string
+  @IsString()
+  backgroundColor: string;
 
-    @IsNumber()
-    position: number
+  @IsNumber()
+  position: string;
 }
