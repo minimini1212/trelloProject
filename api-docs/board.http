@@ -1,0 +1,44 @@
+##
+//
+POST http://localhost:3000/board
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
+{
+	"boardName":"1번 보드",
+	"backgroundColor":"1010",
+	"description":"1번 보드 소개"
+}
+
+##
+//
+PUT http://localhost:3000/board/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
+{
+	"boardName":"1번 보드 수정",
+	"backgroundColor":"1111",
+	"description":"1번 보드 소개 수정"
+}
+
+##
+//
+POST http://localhost:3000/board/1/invite
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
+{
+	"email":"dnjs0001@naver.com"
+}
+
+##
+//
+GET http://localhost:3000/board/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
+##
+//
+DELETE  http://localhost:3000/board/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
