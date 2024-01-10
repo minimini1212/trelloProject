@@ -17,7 +17,6 @@ export class CardService {
   constructor(
     @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
   ) {}
-  ) {}
 
   async findAll(columnId: number) {
     if (
@@ -55,7 +54,7 @@ export class CardService {
       title: createCardDto.title,
       description: createCardDto.description,
       backgroundColor: createCardDto.backgroundColor,
-      position: createCardDto.position,
+      position: newPosition,
     });
   }
 
