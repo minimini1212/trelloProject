@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { Board } from 'src/board/entities/board.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,

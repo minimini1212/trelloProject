@@ -20,7 +20,7 @@ export class ColumnService {
   ) {}
 
   // 컬럼 생성
-  async create(createColumnDto: CreateColumnDto) {
+  async create(boardId, createColumnDto: CreateColumnDto) {
     const { title } = createColumnDto;
 
     const foundColumns = await this.columnRepository.find({
@@ -45,6 +45,7 @@ export class ColumnService {
       return await this.columnRepository.save({
         title,
         position: NewPosition,
+        boardId,
       });
     }
   }

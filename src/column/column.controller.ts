@@ -17,14 +17,23 @@ import { AuthGuard } from '@nestjs/passport';
 import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('column')
+@Controller('board/:boardId/column')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   // 컬럼생성
   @Post()
-  create(@Body() createColumnDto: CreateColumnDto) {
-    return this.columnService.create(createColumnDto);
+  async create(
+    @Param('boardId') boardId: string,
+    @Body() createColumnDto: CreateColumnDto,
+  ) {
+    const newColumn = await this.columnService.create(+boardId, createColumnDto);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: '생성 성공',
+      newColumn,
+    };
   }
 
   // 컬럼순서이동
@@ -33,7 +42,16 @@ export class ColumnController {
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    return this.columnService.changePosition(+id, changePositionColumnDto);
+    const updatedColumn = await this.columnService.changePosition(
+      +id,
+      changePositionColumnDto,
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '위치 이동 성공',
+      updatedColumn,
+    };
   }
 
   // 컬럼수정
@@ -42,7 +60,16 @@ export class ColumnController {
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
-    return this.columnService.updateTitle(+id, updateColumnDto);
+    const updatedColumn = await this.columnService.updateTitle(
+      +id,
+      updateColumnDto,
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '이름 수정 성공',
+      updatedColumn,
+    };
   }
 
   // 컬럼삭제
@@ -53,7 +80,13 @@ export class ColumnController {
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
   @Get()
-  findAll() {
-    return this.columnService.findAll();
+  async findAll() {
+    const columns = await this.columnService.findAll();
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '컬럼 조회 성공',
+      columns,
+    };
   }
 }
