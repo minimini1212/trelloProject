@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,21 +6,28 @@ import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Columns } from './entities/column.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 import { LexoRank } from 'lexorank';
+import { BoardService } from 'src/board/board.service';
 
 @Injectable()
 export class ColumnService {
   constructor(
     @InjectRepository(Columns)
     private readonly columnRepository: Repository<Columns>,
-    private readonly dataSource: DataSource,
+    private readonly boardService: BoardService,
   ) {}
 
   // 컬럼 생성
   async create(boardId, createColumnDto: CreateColumnDto) {
     const { title } = createColumnDto;
+
+    const board = await this.boardService.verifyBoardById(boardId)
+
+    if (!board) {
+      throw new NotFoundException('해당 보드가 존재하지 않습니다.');
+    }
 
     // 밑에 있는 함수 findAll 실행 값을 할당
     const foundColumns = await this.findAll(boardId);
