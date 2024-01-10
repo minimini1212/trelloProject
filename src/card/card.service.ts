@@ -68,15 +68,12 @@ export class CardService {
     const card = await this.cardRepository.findOne({
       where: { cardId },
       relations: {
-        column:  true,
+        column: true,
       },
     });
 
-    await this.boardService.checkMember(
-      card.column.boardId, 
-      managerId,
-    )
-    
+    await this.boardService.checkMember(card.column.boardId, managerId);
+
     if (card === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
     const cards = await this.cardRepository.findOne({
@@ -142,7 +139,7 @@ export class CardService {
       const prevCardPosition = LexoRank.parse(prevCard.position);
       await this.cardRepository.update(
         { cardId },
-        { position: prevCardPosition.genPrev().toString() },
+        { position: prevCardPosition.genNext().toString() },
       );
     } else {
       const nextCardPosition = LexoRank.parse(nextCard.position);
