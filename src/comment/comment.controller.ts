@@ -13,14 +13,14 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
-@Controller('comment')
+@Controller('')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('card/:cardId')
   async create(
-    @Param('CardId') cardId: number,
+    @Param('cardId') cardId: number,
     @Body() createCommentDto: CreateCommentDto,
   ) {
     await this.commentService.create(+cardId, createCommentDto);
@@ -42,8 +42,12 @@ export class CommentController {
 
   @HttpCode(HttpStatus.OK)
   @Get('card/:cardId/:commentId')
-  async findOne(@Param('cardId, commentId') cardId: number, commentId: number) {
-    const comment = await this.commentService.findOne(+cardId, +commentId);
+  async findOne(
+    @Param('cardId') cardId: number,
+    @Param('commentId') commentId: number,
+  ) {
+    console.log(cardId, commentId);
+    const comment = await this.commentService.findOne(cardId, commentId);
     return {
       status: HttpStatus.OK,
       comment,
