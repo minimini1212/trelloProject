@@ -46,11 +46,11 @@ export class Card {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Columns)
-  @JoinColumn({ name: 'columnId', referencedColumnName: 'id' })
+  @ManyToOne((type) => Columns, (column) => column.cards)
+  @JoinColumn({ name: 'column_id', referencedColumnName: 'id' })
   column: Columns;
 
-  @RelationId((card: Card) => card.column)
+  @Column()
   columnId: number;
 
   @ManyToMany(() => User, { cascade: true })

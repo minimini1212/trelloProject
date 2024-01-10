@@ -13,7 +13,7 @@ import {
 
 @Entity('comments')
 export class Comment {
-  @PrimaryGeneratedColumn({ unsigned: true })
+  @PrimaryGeneratedColumn()
   commentId: number;
 
   @IsNotEmpty({ message: '내용이 없습니다.' })
