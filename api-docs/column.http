@@ -1,0 +1,35 @@
+###
+// 컬럼 생성
+POST http://localhost:3000/board/boardId/column
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
+{
+  "title": "첫 타이틀"
+}
+
+###
+// 컬럼 순서 이동
+PUT http://localhost:3000/board/boardId/column/columnId/position
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+
+{
+  "preColumnId": 9,
+  "nextColumnId": 11
+}
+
+###
+// 컬럼 이름 수정
+PUT http://localhost:3000/board/boardId/column/columnId
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+
+{
+    "title": "타이틀 수정입니다."
+}
+
+###
+// 컬럼 삭제
+DELETE http://localhost:3000/board/boardId/column/columnId
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
