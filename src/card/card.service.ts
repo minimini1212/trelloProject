@@ -11,22 +11,23 @@ import { UpdateCardDto } from './dto/update-card.dto';
 import { LexoRank } from 'lexorank';
 import { DeadlineCardDto } from './dto/deadline-card.dto';
 import { ChangePositionCardDto } from './dto/changeposition-card.dto';
+import { BoardService } from 'src/board/board.service';
+
 
 @Injectable()
 export class CardService {
   constructor(
     @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
-  ) {}
+    private boardService: BoardService
 
+  ) {}
   async findAll(columnId: number) {
-    if (
-      (await this.cardRepository.findOneBy({ column: { id: columnId } })) ===
-      null
-    )
-      throw new NotFoundException('해당 카드들이 존재하지 않습니다.');
-    return await this.cardRepository.find({
+    const cards = await this.cardRepository.find({
       where: { column: { id: columnId } },
     });
+    if (cards === null) 
+      throw new NotFoundException('해당 컬룸이 존재하지 않습니다.');
+    return cards
   }
 
   async create(createCardDto: CreateCardDto): Promise<Card> {
@@ -48,7 +49,7 @@ export class CardService {
     }
 
     return this.cardRepository.save({
-      columnId,
+      column: { id: columnId },
       title,
       description,
       backgroundColor,
@@ -67,7 +68,19 @@ export class CardService {
     cardId: number,
     managerId: number,
   ) {
-    if ((await this.cardRepository.findOneBy({ cardId })) === null)
+    const card = (await this.cardRepository.findOne({ 
+      where: { cardId },
+      select: { column: {
+        boardId: true
+      }}
+    }))
+
+    await this.boardService.checkMember(
+      card.column.boardId, 
+      managerId,
+    )
+    
+    if ( card === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
     const cards = await this.cardRepository.findOne({
       where: { cardId: cardId },

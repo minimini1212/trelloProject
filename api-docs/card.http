@@ -1,5 +1,5 @@
 @url = http://localhost:3000/card
-@cardId = 2
+@cardId = 1
 @columnId = 1
 @managerId = 1
 
@@ -23,9 +23,9 @@ PUT {{url}}/{{cardId}}
 Content-Type: application/json
 
 {
-    "title": "할일",
-    "backgroundColor": "blue",
-    "description": "안녕",
+    "title": "시험",
+    "backgroundColor": "yellow",
+    "description": "ㅇㄹ냐ㅗ",
     "managerId": {{managerId}}
 }
 
