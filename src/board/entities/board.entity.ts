@@ -1,8 +1,14 @@
 import { IsNotEmpty } from 'class-validator';
+import { Columns } from 'src/column/entities/column.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,4 +40,13 @@ export class Board {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => Columns, (column) => column.board)
+  columns: Columns[];
+
+  @ManyToOne((type) => User, (user) => user.createdBoards)
+  creator: User;
+ 
+  // @ManyToMany((type) => User, (user) => user.joinedBoards)
+  // members: User[];
 }

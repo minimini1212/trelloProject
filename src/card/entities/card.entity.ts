@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -12,18 +13,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Entity('Cards')
 export class Card {
   @PrimaryGeneratedColumn()
   cardId: number;
-
-  @ManyToOne(() => Columns, (column) => column.id)
-  column: Columns;
-
-  @ManyToMany(() => User, { cascade: true })
-  @JoinTable()
-  manager: User[];
 
   @IsNotEmpty({ message: '비어 있는 항목이 있습니다.' })
   @Column()
@@ -41,7 +36,7 @@ export class Card {
   @Column()
   position: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   deadline: Date;
 
   @CreateDateColumn()
@@ -49,4 +44,19 @@ export class Card {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Columns, (column) => column.cards)
+  @JoinColumn({
+    name: "columnId",
+    referencedColumnName: "id",
+    foreignKeyConstraintName: "fk_column_id"
+  })
+  column: Columns;
+
+  @ManyToMany(() => User, { cascade: true })
+  @JoinTable()
+  manager: User[];
+
+  @OneToMany((type) => Comment, (comment) => comment.card)
+  comments: Comment[];
 }

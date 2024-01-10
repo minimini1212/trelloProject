@@ -1,8 +1,13 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Board } from 'src/board/entities/board.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -42,4 +47,18 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => Board, (board) => board.creator)
+  createdBoards: Board[];
+
+  // @ManyToMany((type) => Board, (board) => board.members)
+  // @JoinTable({
+  //   name: 'boardUsers',
+  //   joinColumn: { name: 'userId', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'boardId', referencedColumnName: 'boardId' },
+  // })
+  // joinedBoards: Board[];
+
+  @OneToMany((type) => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
