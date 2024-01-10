@@ -45,7 +45,7 @@ export class Columns {
   deletedAt: Date;
 
   @ManyToOne((Type) => Board, (board) => board.columns)
-  @JoinColumn()
+  @JoinColumn({ name: 'board_id' , referencedColumnName: 'boardId'})
   board: Board;
 
   @OneToMany((type) => Card, (card) => card.column)
