@@ -22,7 +22,7 @@ import {
 @Entity()
 // export class Column 으로 설정하면 @Column과 충돌..
 export class Columns {
-  @PrimaryGeneratedColumn({ unsigned: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @IsNotEmpty({ message: '입력란을 확인해주세요' })

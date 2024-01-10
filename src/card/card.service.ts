@@ -130,14 +130,14 @@ export class CardService {
       where: { cardId: nextCardId },
     });
 
-    if (!prevCardId) {
+    if (!prevCardId && nextCardId) {
       // 카드를 제일 위로 올릴 때
       const nextCardPosition = LexoRank.parse(nextCard.position);
       await this.cardRepository.update(
         { cardId },
         { position: nextCardPosition.genPrev().toString() },
       );
-    } else if (!nextCardId) {
+    } else if (prevCardId && !nextCardId) {
       // 카드를 제일 아래로 내릴 때
       const prevCardPosition = LexoRank.parse(prevCard.position);
       await this.cardRepository.update(
