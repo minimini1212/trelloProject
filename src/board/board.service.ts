@@ -37,12 +37,17 @@ export class BoardService {
   }
 
   //보드 수정
-  async update(id: number, updateBoardDto: UpdateBoardDto) {
-    let oldBoard = await this.verifyBoardById(id);
-    oldBoard = { ...oldBoard, ...updateBoardDto };
+  async update(
+    boardId: number,
+    userId: number,
+    updateBoardDto: UpdateBoardDto,
+  ) {
+    const board = await this.verifyBoardById(boardId);
 
+    await this.checkMember(boardId, userId);
+
+    let oldBoard = { ...board, ...updateBoardDto };
     const updatedBoard = await this.boardRepository.save(oldBoard);
-
     return updatedBoard;
   }
 
@@ -96,9 +101,18 @@ export class BoardService {
     return board;
   }
 
-  //권한 체크
+  //멤버 확인
+  private async checkMember(boardId: number, userId: number) {
+    const boardUser = await this.boardUserRepository.findOne({
+      where: { boardId, userId },
+    });
+    if (!boardUser) {
+      throw new ForbiddenException('보드 멤버만 수정할 수 있습니다.');
+    }
+  }
+
+  //생성자 확인
   private checkPermission(creatorId: number, userId: number) {
-    console.log('아이디', creatorId, userId);
     if (creatorId !== userId) {
       throw new ForbiddenException('생성한 사용자만 삭제할 수 있습니다.');
     }

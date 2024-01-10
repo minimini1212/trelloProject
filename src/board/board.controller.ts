@@ -41,10 +41,13 @@ export class BoardController {
   @Put(':boardId')
   async update(
     @Param('boardId') boardId: number,
+    @Req() req,
     @Body() updateBoardDto: UpdateBoardDto,
   ) {
+    const { id: userId } = req.user;
     const updatedBoard = await this.boardService.update(
       boardId,
+      userId,
       updateBoardDto,
     );
     return {
