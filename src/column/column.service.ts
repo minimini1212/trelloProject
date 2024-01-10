@@ -86,6 +86,8 @@ export class ColumnService {
     // 지정된 컬럼을 옮기고 난 후 오론쪽에 존재하는 컬럼
     const nextColumn = await this.findOne(nextColumnId);
 
+    console.log(preColumn, nextColumn)
+
     // 지정된 컬럼을 맨 왼쪽자리로 옮겼을 때
     if (!preColumnId && nextColumnId) {
       const nextColumnPosition = LexoRank.parse(nextColumn.position);

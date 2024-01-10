@@ -1,5 +1,4 @@
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODgzNTc5LCJleHAiOjE3MDQ4ODcxNzl9.xM3M0LA3r2rznN5M7Ujv8ITfhfNr_FB8QMJpViBAeEU
-
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTcwNDkwNTk1MiwiZXhwIjoxNzA0OTA5NTUyfQ.ROE8xlwfZsvdrlfPwNaf7KJ6ZysUzOQmAdkvpMZXTNU
 ###
 // 사용자 정보 조회
 GET http://localhost:3000/users/me
