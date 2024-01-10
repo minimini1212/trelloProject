@@ -117,7 +117,7 @@ export class BoardService {
   }
 
   //멤버 확인
-  private async checkMember(boardId: number, userId: number) {
+  async checkMember(boardId: number, userId: number) {
     const boardUser = await this.boardUserRepository.findOne({
       where: { boardId, userId },
     });
@@ -130,7 +130,7 @@ export class BoardService {
   //생성자 확인
   private checkPermission(creatorId: number, userId: number) {
     if (creatorId !== userId) {
-      throw new ForbiddenException('생성한 사용자만 삭제할 수 있습니다.');
+      throw new ForbiddenException('권한이 없습니다.');
     }
   }
 }
