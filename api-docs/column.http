@@ -33,3 +33,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxN
 DELETE http://localhost:3000/board/boardId/column/columnId
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+
+
+###
+// 컬럼 전체 조회
+GET http://localhost:3000/board/boardId/column/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
