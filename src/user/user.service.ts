@@ -71,7 +71,7 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    const user = await this.userRepository.findBy({ email });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
