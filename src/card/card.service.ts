@@ -29,13 +29,30 @@ export class CardService {
     });
   }
 
-  async create(createCardDto: CreateCardDto) {
+  async create(createCardDto: CreateCardDto): Promise<Card> {
+    const { columnId, title, description, backgroundColor } = createCardDto;
+
+    const foundCards = await this.cardRepository.find({
+      order: {
+        position: 'ASC',
+      },
+    });
+    let newPosition = '';
+    if (foundCards.length < 1) {
+      newPosition = LexoRank.middle().toString();
+    } else {
+      const position = LexoRank.parse(
+        foundCards[foundCards.length - 1].position,
+      );
+      newPosition = position.genNext().toString();
+    }
+
     return this.cardRepository.save({
-      column: { id: createCardDto.columnId },
-      title: createCardDto.title,
-      description: createCardDto.description,
-      backgroundColor: createCardDto.backgroundColor,
-      position: createCardDto.position,
+      columnId,
+      title,
+      description,
+      backgroundColor,
+      position: newPosition,
     });
   }
 
