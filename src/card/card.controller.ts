@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Put,
+} from '@nestjs/common';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { update } from 'lodash';
@@ -12,42 +23,24 @@ export class CardController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  async create(@Body() createCardDto: CreateCardDto) {
-    await this.cardService.create(createCardDto);
-    return {
-      status: HttpStatus.OK,
-      message: "카드 생성에 성공하였습니다."
-    }
+  create(@Body() createCardDto: CreateCardDto) {
+    return this.cardService.create(createCardDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get('/:id')
- async findAll(@Param('id') id: number) {
-    const cards = await this.cardService.findAll(+id);
-    return {
-      status: HttpStatus.OK,
-      cards
-    }
+  findAll(@Param('id') id: number) {
+    return this.cardService.findAll(+id);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete('/:id')
-  async remove(@Param('id') id: string) {
-    await this.cardService.delete(+id);
-    return {
-      status: HttpStatus.OK,
-      message: "카드 삭제에 성공하였습니다."
-    }
+  remove(@Param('id') id: string) {
+    return this.cardService.delete(+id);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Put('/:id')
-  async update(@Body() { managerId, ...updateCardDto}: { managerId: number } & UpdateCardDto, @Param('id') id: string) {
-    await this.cardService.update(updateCardDto, +id, managerId);
-    return {
-      status: HttpStatus.OK,
-      message: "카드 수정에 성공하였습니다."
-    }
+  update(@Body() updateCardDto: UpdateCardDto, @Param('id') id: string) {
+    return this.cardService.update(updateCardDto, +id);
+  }
 
   @Put('/:id/deadline')
   deadline(@Body() deadlineCardDto: DeadlineCardDto, @Param('id') id: string) {

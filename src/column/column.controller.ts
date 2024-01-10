@@ -9,7 +9,6 @@ import {
   Req,
   UseGuards,
   Put,
-  HttpStatus,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -24,67 +23,37 @@ export class ColumnController {
 
   // 컬럼생성
   @Post()
-  async create(@Body() createColumnDto: CreateColumnDto) {
-    const newColumn = await this.columnService.create(createColumnDto);
-
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: '생성 성공',
-      newColumn,
-    };
+  create(@Body() createColumnDto: CreateColumnDto) {
+    return this.columnService.create(createColumnDto);
   }
 
   // 컬럼순서이동
   @Put(':id/position')
-  async changePosition(
+  changePosition(
     @Param('id') id: string,
     @Body() changePositionColumnDto: ChangePositionColumnDto,
   ) {
-    const updatedColumn = await this.columnService.changePosition(+id, changePositionColumnDto);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: '위치 이동 성공',
-      updatedColumn,
-    };
+    return this.columnService.changePosition(+id, changePositionColumnDto);
   }
 
   // 컬럼수정
   @Put(':id')
-  async updateTitle(
+  updateTitle(
     @Param('id') id: string,
     @Body() updateColumnDto: UpdateColumnDto,
   ) {
-    const updatedColumn = await this.columnService.updateTitle(+id, updateColumnDto);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: '이름 수정 성공',
-      updatedColumn,
-    };
+    return this.columnService.updateTitle(+id, updateColumnDto);
   }
 
   // 컬럼삭제
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const deletedColumn = await this.columnService.remove(+id);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: '컬럼 삭제 성공',
-      deletedColumn,
-    };
+  remove(@Param('id') id: string) {
+    return this.columnService.remove(+id);
   }
 
   // 컬럼조회(position 기준으로 'asc' 정렬)
   @Get()
-  async findAll() {
-    const columns = await this.columnService.findAll();
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: '컬럼 조회 성공',
-      columns,
-    }; 
+  findAll() {
+    return this.columnService.findAll();
   }
 }
