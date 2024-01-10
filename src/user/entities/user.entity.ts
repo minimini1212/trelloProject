@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { BoardUser } from 'src/board/entities/board-user.entity';
 import { Board } from 'src/board/entities/board.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
 import {
@@ -51,13 +52,8 @@ export class User {
   @OneToMany((type) => Board, (board) => board.creator)
   createdBoards: Board[];
 
-  // @ManyToMany((type) => Board, (board) => board.members)
-  // @JoinTable({
-  //   name: 'boardUsers',
-  //   joinColumn: { name: 'userId', referencedColumnName: 'id' },
-  //   inverseJoinColumn: { name: 'boardId', referencedColumnName: 'boardId' },
-  // })
-  // joinedBoards: Board[];
+  @OneToMany((type) => BoardUser, (boardUser) => boardUser.user)
+  boardUsers: BoardUser[]
 
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments: Comment[];
