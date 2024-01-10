@@ -29,7 +29,7 @@ export class BoardUser {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne((type) => User, (user)=> user.boardUsers)
+  @ManyToOne((type) => User, (user)=> user.boardUsers, { cascade: true })
   @JoinColumn({ name: 'user_id' , referencedColumnName: 'id'})
   user: User;
 

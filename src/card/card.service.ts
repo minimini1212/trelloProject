@@ -72,10 +72,14 @@ export class CardService {
       },
     });
 
-    await this.boardService.checkMember(card.column.boardId, managerId);
-
     if (card === null)
-      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+    throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+
+    await this.boardService.checkMember(
+      card.column.boardId, 
+      managerId,
+    )
+    
     const cards = await this.cardRepository.findOne({
       where: { cardId },
       relations: { manager: true },

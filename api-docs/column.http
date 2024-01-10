@@ -1,7 +1,11 @@
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0OTA0ODY3LCJleHAiOjE3MDQ5MDg0Njd9.DoJlK7Z4F-GlCHSuRhyHOga5M2_nxJ-NutiKaC2_9I0
+@boardId = 5
+@columnId = 1
 ###
 // 컬럼 생성
-POST http://localhost:3000/board/boardId/column
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+POST http://localhost:3000/board/{{boardId}}/column
+Content-Type: application/json
+Authorization: {{token}}
 
 {
   "title": "첫 타이틀"
@@ -9,9 +13,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxN
 
 ###
 // 컬럼 순서 이동
-PUT http://localhost:3000/board/boardId/column/columnId/position
+PUT http://localhost:3000/board/{{boardId}}/column/{{columnId}}/position
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+Authorization: {{token}}
 
 {
   "preColumnId": 9,
@@ -22,7 +26,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxN
 // 컬럼 이름 수정
 PUT http://localhost:3000/board/boardId/column/columnId
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+Authorization: {{token}}
 
 {
     "title": "타이틀 수정입니다."
@@ -32,11 +36,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxN
 // 컬럼 삭제
 DELETE http://localhost:3000/board/boardId/column/columnId
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+Authorization: {{token}}
 
 
 ###
 // 컬럼 전체 조회
 GET http://localhost:3000/board/boardId/column/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+Authorization: {{token}}
