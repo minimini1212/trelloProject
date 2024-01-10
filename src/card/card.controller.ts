@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Body,
+  Patch,
   Param,
   Delete,
   HttpCode,
@@ -29,7 +30,6 @@ export class CardController {
     };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get('/:id')
   async findAll(@Param('id') id: number) {
     const cards = await this.cardService.findAll(+id);
@@ -39,7 +39,6 @@ export class CardController {
     };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Delete('/:id')
   async remove(@Param('id') id: string) {
     await this.cardService.delete(+id);
@@ -49,7 +48,6 @@ export class CardController {
     };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Put('/:id')
   async update(
     @Body()

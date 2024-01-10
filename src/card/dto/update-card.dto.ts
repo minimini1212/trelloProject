@@ -6,7 +6,11 @@ import { ManyToOne } from 'typeorm';
 export class UpdateCardDto extends PartialType(CreateCardDto) {
   @IsString()
   title: string;
+  @IsString()
+  title: string;
 
+  @IsString()
+  description: string;
   @IsString()
   description: string;
 
@@ -15,4 +19,6 @@ export class UpdateCardDto extends PartialType(CreateCardDto) {
 
   @IsNumber()
   position: string;
+  @IsString()
+  backgroundColor: string;
 }

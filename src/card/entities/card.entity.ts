@@ -1,12 +1,12 @@
 import { User } from 'src/user/entities/user.entity';
-import { Columns } from 'src/column/entities/column.entity';
+import { Column as ColumnEntitiy } from 'src/column/entities/column.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
