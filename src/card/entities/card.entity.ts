@@ -57,6 +57,6 @@ export class Card {
   @JoinTable()
   manager: User[];
 
-  @OneToMany((type) => Comment, (comment) => comment.card)
+  @OneToMany(() => Comment, (comment) => comment.card)
   comments: Comment[];
 }

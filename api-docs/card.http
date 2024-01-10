@@ -1,5 +1,5 @@
 @url = http://localhost:3000/card
-@cardId = 9
+@cardId = 1
 @columnId = 1
 @managerId = 1
 
