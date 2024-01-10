@@ -1,4 +1,4 @@
-@url = http://localhost:3000/card
+@url = http://localhost:3000/comment/card
 @cardId = 2
 @commentId = 1
 @token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODgzNTc5LCJleHAiOjE3MDQ4ODcxNzl9.xM3M0LA3r2rznN5M7Ujv8ITfhfNr_FB8QMJpViBAeEU
@@ -17,7 +17,6 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-    "cardId": 2,
     "comment": "끝내주게 숨쉬기"
 }
 
