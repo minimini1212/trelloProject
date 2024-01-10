@@ -22,8 +22,8 @@ export class CardService {
         position: 'ASC',
       },
     });
-    if (cards === null)
-      throw new NotFoundException('해당 컬룸이 존재하지 않습니다.');
+    if (cards.length <= 0)
+      throw new NotFoundException('해당 컬룸으로 등록된 카드가 없습니다.');
     return cards;
   }
 
@@ -67,15 +67,16 @@ export class CardService {
   ) {
     const card = await this.cardRepository.findOne({
       where: { cardId },
-      select: {
-        column: {
-          boardId: true,
-        },
+      relations: {
+        column:  true,
       },
     });
 
-    await this.boardService.checkMember(card.column.boardId, managerId);
-
+    await this.boardService.checkMember(
+      card.column.boardId, 
+      managerId,
+    )
+    
     if (card === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
     const cards = await this.cardRepository.findOne({
