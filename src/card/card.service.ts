@@ -29,32 +29,13 @@ export class CardService {
     });
   }
 
-  async create(createCardDto: CreateCardDto): Promise<Card> {
-    // if (await columnRepository.findOneBy({ columnId: createCardDto.columnId }))
-    // throw new NotFoundException('해당 컬룸이 존재하지 않습니다.')
-    const { columnId, title, description, backgroundColor } = createCardDto;
-
-    const foundCards = await this.cardRepository.find({
-      order: {
-        position: 'ASC',
-      },
-    });
-    let newPosition = '';
-    if (foundCards.length < 1) {
-      newPosition = LexoRank.middle().toString();
-    } else {
-      const position = LexoRank.parse(
-        foundCards[foundCards.length - 1].position,
-      );
-      newPosition = position.genNext().toString();
-    }
-
+  async create(createCardDto: CreateCardDto) {
     return this.cardRepository.save({
       column: { id: createCardDto.columnId },
       title: createCardDto.title,
       description: createCardDto.description,
       backgroundColor: createCardDto.backgroundColor,
-      position: newPosition,
+      position: createCardDto.position,
     });
   }
 
