@@ -9,9 +9,9 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Board } from './entities/board.entity';
-import { BoardUser } from 'src/boardUser/entities/board-user.entity';
 import _ from 'lodash';
-import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
+import { BoardUser } from './entities/board-user.entity';
 
 @Injectable()
 export class BoardService {
@@ -20,8 +20,7 @@ export class BoardService {
     private readonly boardRepository: Repository<Board>,
     @InjectRepository(BoardUser)
     private readonly boardUserRepository: Repository<BoardUser>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userService: UserService,
   ) {}
 
   //보드 생성
@@ -50,11 +49,11 @@ export class BoardService {
     updateBoardDto: UpdateBoardDto,
   ) {
     const board = await this.verifyBoardById(boardId);
-
     await this.checkMember(boardId, userId);
 
     let oldBoard = { ...board, ...updateBoardDto };
     const updatedBoard = await this.boardRepository.save(oldBoard);
+
     return updatedBoard;
   }
 
@@ -73,11 +72,13 @@ export class BoardService {
     const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
 
-    const user = await this.userRepository.findOne({ where: { email } });
+    const users = await this.userService.findUserByEmail(email);
 
-    if (!user) {
+    if (users.length === 0) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
+
+    const user = users[0]; // 첫 번째 사용자 선택
 
     const checkBoardUser = await this.boardUserRepository.findOne({
       where: { userId: user.id, boardId },
@@ -102,10 +103,17 @@ export class BoardService {
     const board = await this.boardRepository.findOne({
       where: { boardId },
     });
+
     if (!board) {
       throw new NotFoundException('보드가 존재하지 않습니다..');
     }
+
     return board;
+  }
+
+  //보드 전체조회
+  async getAllBoard() {
+    return await this.boardRepository.find();
   }
 
   //멤버 확인
@@ -113,6 +121,7 @@ export class BoardService {
     const boardUser = await this.boardUserRepository.findOne({
       where: { boardId, userId },
     });
+
     if (!boardUser) {
       throw new ForbiddenException('보드 멤버만 수정할 수 있습니다.');
     }
