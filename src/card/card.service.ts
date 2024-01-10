@@ -67,10 +67,8 @@ export class CardService {
   ) {
     const card = await this.cardRepository.findOne({
       where: { cardId },
-      select: {
-        column: {
-          boardId: true,
-        },
+      relations: {
+        column:  true,
       },
     });
 
