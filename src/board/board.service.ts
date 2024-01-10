@@ -123,7 +123,7 @@ export class BoardService {
     });
 
     if (!boardUser) {
-      throw new ForbiddenException('보드 멤버만 수정할 수 있습니다.');
+      throw new ForbiddenException('보드 멤버만 접근 가능합니다.');
     }
   }
 
