@@ -6,7 +6,7 @@ import {
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -71,8 +71,8 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    const user = await this.userRepository.findBy({ email })
-    
+    const user = await this.userRepository.findBy({ email });
+
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }

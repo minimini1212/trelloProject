@@ -21,15 +21,15 @@ Content-Type: application/json
   "password": "123456"
 }
 
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NjEyNzk4LCJleHAiOjE3MDUyMTc1OTh9.j4XveEQUKolKNve9ZmJz9giAE04ygTJrI0qlmWkDQ1w
+
 ###
 // 회원 탈퇴
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NjEyNzk4LCJleHAiOjE3MDUyMTc1OTh9.j4XveEQUKolKNve9ZmJz9giAE04ygTJrI0qlmWkDQ1w
 DELETE http://localhost:3000/auth/unregister
 refresh-token: {{refreshToken}}
 
 ###
 // 토큰 재발급
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzA0NjEyNjQ5LCJleHAiOjE3MDUyMTc0NDl9.hnxn_3Jt0ME9dHHG0yDu6TvklEV4UAGnROPju-h2V-E
 POST http://localhost:3000/auth/refresh
 refresh-token: {{refreshToken}}
 

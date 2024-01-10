@@ -1,13 +1,15 @@
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+
 ###
 // 사용자 정보 조회
 GET http://localhost:3000/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE2OTgzLCJleHAiOjE3MDQ2MjA1ODN9.PHyiacA6Qmsz-aPwzZwuuPAMVtPthwK2mG2sustM04E
+Authorization: {{token}}
 
 ###
 // 사용자 정보 수정
 PUT http://localhost:3000/users/me
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzA0NjE3MDUwLCJleHAiOjE3MDQ2MjA2NTB9.gnSGRTuxc7OIh2VEFVo5pNE76yorvRysIW0ko3-7dhE
+Authorization: {{token}}
 
 {
   "name": "update tester1",

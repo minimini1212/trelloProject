@@ -11,9 +11,9 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpDto } from './dto/sign-up.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { SignInDto } from './dto/sign-in.dto';
+import { SignInDto } from './dtos/sign-in.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
@@ -33,12 +33,12 @@ export class AuthController {
   ): Promise<object> {
     signUpDto.imagePath = image ? image.filename : null;
 
-    const user = await this.authService.signup(signUpDto);
+    const data = await this.authService.signup(signUpDto);
 
     return {
       statusCode: HttpStatus.CREATED,
       message: '회원가입에 성공했습니다.',
-      user,
+      data,
     };
   }
 
