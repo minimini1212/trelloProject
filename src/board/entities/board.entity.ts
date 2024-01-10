@@ -4,6 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToMany,
@@ -50,4 +51,7 @@ export class Board {
 
   @OneToMany((type) => BoardUser, (boardUser) => boardUser.board)
   boardUsers: BoardUser[]
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
