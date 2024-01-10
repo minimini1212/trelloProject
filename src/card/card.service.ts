@@ -25,8 +25,8 @@ export class CardService {
     const cards = await this.cardRepository.find({
       where: { column: { id: columnId } },
     });
-    if (cards === null) 
-      throw new NotFoundException('해당 컬룸이 존재하지 않습니다.');
+    if (cards.length <= 0) 
+      throw new NotFoundException('해당 컬룸으로 등록된 카드가 없습니다.');
     return cards
   }
 
@@ -75,13 +75,14 @@ export class CardService {
       }}
     }))
 
+    if (card === null)
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+
     await this.boardService.checkMember(
       card.column.boardId, 
       managerId,
     )
-    
-    if ( card === null)
-      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+
     const cards = await this.cardRepository.findOne({
       where: { cardId: cardId },
       relations: { manager: true },
