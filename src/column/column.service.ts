@@ -23,8 +23,11 @@ export class ColumnService {
   async create(createColumnDto: CreateColumnDto) {
     const { title } = createColumnDto;
 
-    // 밑에 있는 함수 findAll 실행 값을 할당
-    const foundColumns = await this.findAll();
+    const foundColumns = await this.columnRepository.find({
+      order: {
+        position: 'ASC',
+      },
+    });
 
     if (foundColumns.length < 1) {
       const position = LexoRank.middle().toString();
@@ -53,20 +56,29 @@ export class ColumnService {
   ) {
     const { preColumnId, nextColumnId } = changePositionColumnDto;
 
-    // id로 컬럼 조회하는 함수 실행값 할당
-    const selectedColumn = await this.findOne(id);
+    const selectedColumn = await this.columnRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
     if (!selectedColumn) {
       throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
     }
 
-    // id로 컬럼 조회하는 함수 실행값 할당
     // 지정된 컬럼을 옮기고 난 후 왼쪽에 존재하는 컬럼
-    const preColumn = await this.findOne(preColumnId);
+    const preColumn = await this.columnRepository.findOne({
+      where: {
+        id: preColumnId,
+      },
+    });
 
-    // id로 컬럼 조회하는 함수 실행값 할당
     // 지정된 컬럼을 옮기고 난 후 오론쪽에 존재하는 컬럼
-    const nextColumn = await this.findOne(nextColumnId);
+    const nextColumn = await this.columnRepository.findOne({
+      where: {
+        id: nextColumnId,
+      },
+    });
 
     // 지정된 컬럼을 맨 왼쪽자리로 옮겼을 때
     if (!preColumnId && nextColumnId) {
@@ -97,56 +109,59 @@ export class ColumnService {
       );
     }
 
-    // 맨 밑에 있는 함수 findAll 실행 값 리턴
-    return await this.findAll();
-  }
-
-  // 컬럼 이름 수정
-  async updateTitle(columnId: number, updateColumnDto: UpdateColumnDto) {
-    const { title } = updateColumnDto;
-
-    // id로 컬럼 조회하는 함수 실행값 할당
-    const foundColumn = await this.findOne(columnId);
-
-    if (!foundColumn) {
-      throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
-    }
-
-    return await this.columnRepository.save({
-      id: columnId,
-      title,
-    });
-  }
-
-  // 컬럼 삭제
-  async remove(columnId: number) {
-    // id로 컬럼 조회하는 함수 실행값 할당
-    const foundColumn = await this.findOne(columnId);
-
-    if (!foundColumn) {
-      throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
-    }
-    await this.columnRepository.softDelete({ id: columnId });
-
-    return foundColumn;
-  }
-
-  // 전체 컬럼 조회(position 을 기준으로 'asc' 정렬이 되어있는 상태)
-  async findAll() {
     return await this.columnRepository.find({
-      where: { deletedAt: null },
       order: {
         position: 'ASC',
       },
     });
   }
 
-  // id를 통한 특정 컬럼 조회하는 함수
-  async findOne(columnId) {
-    return await this.columnRepository.findOne({
+  // 하나의 api 안에 세 번의 db와의 접촉이 맘에 들지 않는데 어떠한 방법이 있을지 고민해보자구..
+  // 컬럼 이름 수정
+  async updateTitle(columnId: number, updateColumnDto: UpdateColumnDto) {
+    const { title } = updateColumnDto;
+
+    const foundColumn = await this.columnRepository.findOne({
       where: {
         id: columnId,
-        deletedAt: null
+      },
+    });
+
+    const updatedColumn = await this.dataSource.transaction(async (manager) => {
+      if (!foundColumn) {
+        throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
+      }
+
+      await manager.update(Columns, { id: columnId }, { title });
+
+      return await manager.findOne(Columns, {
+        where: {
+          id: columnId,
+        },
+      });
+    });
+    return updatedColumn;
+  }
+
+  // 컬럼 삭제
+  async remove(columnId: number) {
+    const foundColumn = await this.columnRepository.findOne({
+      where: {
+        id: columnId,
+      },
+    });
+
+    if (!foundColumn) {
+      throw new NotFoundException('해당 컬럼이 존재하지 않습니다.');
+    }
+    return await this.columnRepository.delete({ id: columnId });
+  }
+
+  // 전체 컬럼 조회(position 을 기준으로 'asc' 정렬이 되어있는 상태)
+  async findAll() {
+    return await this.columnRepository.find({
+      order: {
+        position: 'ASC',
       },
     });
   }

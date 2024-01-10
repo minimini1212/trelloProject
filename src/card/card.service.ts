@@ -1,55 +1,69 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Card } from './entities/card.entity';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { ChangePositionCardDto } from './dto/changeposition-card.dto';
+import { LexoRank } from 'lexorank';
 
 @Injectable()
 export class CardService {
   constructor(
     @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
-  ) { }
+  ) {}
 
   async findAll(columnId: number) {
-    if (await this.cardRepository.findOneBy({ column: { id: columnId } }) === null)
-      throw new NotFoundException('해당 카드들이 존재하지 않습니다.')
+    if ((await this.cardRepository.findOneBy({ columnId })) === null)
+      throw new NotFoundException('해당 카드들이 존재하지 않습니다.');
     return await this.cardRepository.find({
-      where: { column: { id: columnId } },
-    })
+      where: { columnId: columnId },
+    });
   }
 
-  async create(createCardDto: CreateCardDto) {
+  async create(createCardDto: CreateCardDto): Promise<Card> {
+    // if (await columnRepository.findOneBy({ columnId: createCardDto.columnId }))
+    // throw new NotFoundException('해당 컬룸이 존재하지 않습니다.')
+    const { columnId, title, description, backgroundColor } = createCardDto;
+
+    const foundCards = await this.cardRepository.find({
+      order: {
+        position: 'ASC',
+      },
+    });
+    let newPosition = '';
+    if (foundCards.length < 1) {
+      newPosition = LexoRank.middle().toString();
+    } else {
+      const position = LexoRank.parse(
+        foundCards[foundCards.length - 1].position,
+      );
+      newPosition = position.genNext().toString();
+    }
+
     return this.cardRepository.save({
-      column: { id: createCardDto.columnId },
-      title: createCardDto.title,
-      description: createCardDto.description,
-      backgroundColor: createCardDto.backgroundColor,
-      position: createCardDto.position,
-    })
+      columnId,
+      title,
+      description,
+      backgroundColor,
+      position: newPosition,
+    });
   }
 
   async delete(cardId: number) {
-    if (await this.cardRepository.findOneBy({ cardId }) === null)
-      throw new NotFoundException('해당 카드가 존재하지 않습니다.')
-    return await this.cardRepository.delete(cardId)
+    if ((await this.cardRepository.findOneBy({ cardId })) === null)
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+    await this.cardRepository.delete(cardId);
+    return 'Card deleted';
   }
 
-  async update(updateCardDto: UpdateCardDto, cardId: number, managerId: number) {
-    if (await this.cardRepository.findOneBy({ cardId }) === null)
-      throw new NotFoundException('해당 카드가 존재하지 않습니다.')
-    const cards = await this.cardRepository.findOne({
-      where: { cardId: cardId },
-      relations: { manager: true }
-    })
+  async update(updateCardDto: UpdateCardDto, cardId: number) {
+    if ((await this.cardRepository.findOneBy({ cardId })) === null)
+      throw new NotFoundException('해당 카드가 존재하지 않습니다.');
+    await this.cardRepository.update(updateCardDto, cardId);
+    return 'Card updated';
+  }
 
-    if (cards.manager.find((user) => user.id === managerId)) {
-      await this.cardRepository
-        .createQueryBuilder()
-        .relation(Card, "manager")
-        .of(cardId)
-        .remove(managerId)
-      
   async updateDeadline(deadlineCardDto: DeadlineCardDto, cardId: number) {
     if ((await this.cardRepository.findOneBy({ cardId })) === null)
       throw new NotFoundException('해당 카드가 존재하지 않습니다.');
@@ -88,14 +102,20 @@ export class CardService {
         { position: prevCardPosition.genPrev().toString() },
       );
     } else {
-      await this.cardRepository
-        .createQueryBuilder()
-        .relation(Card, "manager")
-        .of(cardId)
-        .add(managerId)
+      // 카드를 중간으로 옮길 때
+      const nextCardPosition = LexoRank.parse(nextCard.position);
+      const prevCardPosition = LexoRank.parse(prevCard.position);
 
+      await this.cardRepository.update(
+        { cardId },
+        { position: prevCardPosition.between(nextCardPosition).toString() },
+      );
     }
 
-    return await this.cardRepository.update(cardId, updateCardDto)
+    return await this.cardRepository.find({
+      order: {
+        position: 'ASC',
+      },
+    });
   }
 }
