@@ -62,7 +62,7 @@ export class BoardService {
     const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
 
-    const deleteResult = await this.boardRepository.delete(boardId);
+    const deleteResult = await this.boardRepository.softDelete(boardId);
 
     return deleteResult;
   }
@@ -99,7 +99,7 @@ export class BoardService {
   //보드 ID로 보드 찾기
   async verifyBoardById(boardId: number) {
     const board = await this.boardRepository.findOne({
-      where: { boardId },
+      where: { boardId, deletedAt: null },
     });
 
     if (!board) {
@@ -111,7 +111,9 @@ export class BoardService {
 
   //보드 전체조회
   async getAllBoard() {
-    return await this.boardRepository.find();
+    return await this.boardRepository.find({
+      where: { deletedAt: null }
+    });
   }
 
   //멤버 확인
