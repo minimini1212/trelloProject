@@ -23,7 +23,7 @@ export class CardService {
       },
     });
     if (cards.length <= 0)
-      throw new NotFoundException('해당 컬룸으로 등록된 카드가 없습니다.');
+      throw new NotFoundException('해당 컬럼으로 등록된 카드가 없습니다.');
     return cards;
   }
 

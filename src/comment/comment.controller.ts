@@ -52,7 +52,6 @@ export class CommentController {
     @Param('cardId') cardId: number,
     @Param('commentId') commentId: number,
   ) {
-    console.log(cardId, commentId);
     const comment = await this.commentService.findOne(cardId, commentId);
     return {
       status: HttpStatus.OK,

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
@@ -22,7 +21,6 @@ import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
-  // 컬럼생성
   @Post()
   async create(
     @Param('boardId') boardId: string,
@@ -43,7 +41,6 @@ export class ColumnController {
     };
   }
 
-  // 컬럼순서이동
   @Put(':id/position')
   async changePosition(
     @Param('boardId') boardId: string,
@@ -67,7 +64,6 @@ export class ColumnController {
     };
   }
 
-  // 컬럼수정
   @Put(':id')
   async updateTitle(
     @Param('boardId') boardId: string,
@@ -90,7 +86,6 @@ export class ColumnController {
     };
   }
 
-  // 컬럼삭제
   @Delete(':id')
   async remove(
     @Param('boardId') boardId: string,
@@ -111,7 +106,6 @@ export class ColumnController {
     };
   }
 
-  // 컬럼조회(position 기준으로 'asc' 정렬)
   @Get()
   async findAll(@Param('boardId') boardId: string, @Req() req) {
     const columns = await this.columnService.findAll(+boardId);
