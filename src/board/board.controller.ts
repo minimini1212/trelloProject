@@ -20,7 +20,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
-  //보드 생성
   @Post()
   async create(@Body() createBoardDto: CreateBoardDto, @Req() req) {
     const { id: creatorId } = req.user;
@@ -37,7 +36,6 @@ export class BoardController {
     };
   }
 
-  //보드 수정
   @Put(':boardId')
   async update(
     @Param('boardId') boardId: number,
@@ -59,7 +57,6 @@ export class BoardController {
     };
   }
 
-  //보드 삭제
   @Delete(':boardId')
   async remove(@Param('boardId') boardId: number, @Req() req) {
     const { id: userId } = req.user;
@@ -73,7 +70,6 @@ export class BoardController {
     };
   }
 
-  //보드 초대
   @Post(':boardId/invite')
   async inviteUser(
     @Param('boardId') boardId: number,
@@ -95,7 +91,6 @@ export class BoardController {
     };
   }
 
-  //보드 조회
   @Get(':boardId')
   async getBoard(@Param('boardId') boardId: number) {
     const board = await this.boardService.verifyBoardById(boardId);
@@ -107,7 +102,6 @@ export class BoardController {
     };
   }
 
-  //보드 전체조회
   @Get()
   async getAllBoard() {
     return await this.boardService.getAllBoard();

@@ -23,7 +23,6 @@ export class BoardService {
     private readonly userService: UserService,
   ) {}
 
-  //보드 생성
   async create(createBoardDto: CreateBoardDto, creatorId: number) {
     const board = this.boardRepository.create({
       ...createBoardDto,
@@ -42,7 +41,6 @@ export class BoardService {
     return savedBoard;
   }
 
-  //보드 수정
   async update(
     boardId: number,
     userId: number,
@@ -57,7 +55,6 @@ export class BoardService {
     return updatedBoard;
   }
 
-  //보드 삭제
   async remove(boardId: number, userId: number) {
     const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
@@ -67,7 +64,6 @@ export class BoardService {
     return deleteResult;
   }
 
-  //보드 초대
   async inviteUser(boardId: number, email: string, userId: number) {
     const board = await this.verifyBoardById(boardId);
     this.checkPermission(board.creatorId, userId);
@@ -96,7 +92,6 @@ export class BoardService {
     return newBoardUser;
   }
 
-  //보드 ID로 보드 찾기
   async verifyBoardById(boardId: number) {
     const board = await this.boardRepository.findOne({
       where: { boardId, deletedAt: null },
@@ -109,14 +104,12 @@ export class BoardService {
     return board;
   }
 
-  //보드 전체조회
   async getAllBoard() {
     return await this.boardRepository.find({
       where: { deletedAt: null }
     });
   }
 
-  //멤버 확인
   async checkMember(boardId: number, userId: number) {
     const boardUser = await this.boardUserRepository.findOne({
       where: { boardId, userId },
@@ -127,7 +120,6 @@ export class BoardService {
     }
   }
 
-  //생성자 확인
   private checkPermission(creatorId: number, userId: number) {
     if (creatorId !== userId) {
       throw new ForbiddenException('권한이 없습니다.');
