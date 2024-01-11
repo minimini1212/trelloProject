@@ -1,7 +1,7 @@
 @url = http://localhost:3000/comment/card
 @cardId = 2
 @commentId = 1
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzA0ODgzNTc5LCJleHAiOjE3MDQ4ODcxNzl9.xM3M0LA3r2rznN5M7Ujv8ITfhfNr_FB8QMJpViBAeEU
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzA0OTM1Njc1LCJleHAiOjE3MDQ5MzkyNzV9.SC3DJA9hEjH6gjAisZd0ZwlUFXkrYQ1EzybdS7Kz-ig
 
 ###
 //댓글 전체 조회
