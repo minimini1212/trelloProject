@@ -1,0 +1,19 @@
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTcwNDkwNTk1MiwiZXhwIjoxNzA0OTA5NTUyfQ.ROE8xlwfZsvdrlfPwNaf7KJ6ZysUzOQmAdkvpMZXTNU
+###
+// 사용자 정보 조회
+GET http://localhost:3000/users/me
+Authorization: {{token}}
+
+###
+// 사용자 정보 수정
+PUT http://localhost:3000/users/me
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "update tester1",
+  "password": "123456",
+  "passwordConfirm": "123456",
+  # "image": "data:image/jpeg;base64,iVBORw0KG...",
+  "description": "hi"
+}

@@ -1,0 +1,40 @@
+@url = http://localhost:3000/comment/card
+@cardId = 2
+@commentId = 1
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzA0OTM1Njc1LCJleHAiOjE3MDQ5MzkyNzV9.SC3DJA9hEjH6gjAisZd0ZwlUFXkrYQ1EzybdS7Kz-ig
+
+###
+//댓글 전체 조회
+GET {{url}}/{{cardId}}
+Authorization: {{token}}
+
+###
+//댓글 조회
+GET {{url}}/{{cardId}}/{{commentId}}
+Authorization: {{token}}
+
+###
+//탯글 생성
+POST {{url}}/{{cardId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "comment": "끝내주게 숨쉬기"
+}
+
+###
+//댓글 수정
+PUT {{url}}/{{cardId}}/{{commentId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "comment": "작살나게 밥먹기"
+}
+
+###
+//댓글 삭제
+DELETE {{url}}/{{cardId}}/{{commentId}}
+Authorization: {{token}}
+

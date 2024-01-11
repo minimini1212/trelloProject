@@ -1,26 +1,117 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { SignUpDto } from './dtos/sign-up.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/entities/user.entity';
+import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcrypt';
+import { SignInDto } from './dtos/sign-in.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+
+  async signup({
+    email,
+    name,
+    imagePath,
+    password,
+    passwordConfirm,
+    description,
+  }: SignUpDto) {
+    const existedUser = await this.userRepository.findOneBy({ email });
+
+    if (existedUser) {
+      throw new BadRequestException('이미 가입된 이메일입니다.');
+    }
+
+    const isPasswordMatched = password === passwordConfirm;
+
+    if (!isPasswordMatched) {
+      throw new BadRequestException(
+        '비밀번호와 비밀번호 재확인이 일치하지 않습니다.',
+      );
+    }
+
+    const hashRound = this.configService.get<number>('PASSWORD_HASH_ROUNDS');
+    const hashedPassword = bcrypt.hashSync(password, hashRound);
+
+    const user = await this.userRepository.save({
+      email,
+      password: hashedPassword,
+      name,
+      imagePath,
+      description,
+    });
+
+    return this.signIn(user.id);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  signIn(id: number) {
+    const payload = { id };
+    const accessToken = this.jwtService.sign(payload);
+
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    this.userRepository.update(id, { refreshToken });
+
+    return { accessToken, refreshToken };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async unregister(refreshToken: string) {
+    const { id } = this.jwtService.verify(refreshToken);
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
+    }
+
+    await this.userRepository.delete(id);
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async validateUser({ email, password }: SignInDto) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: { id: true, password: true },
+    });
+
+    const isPasswordMatched = bcrypt.compareSync(
+      password,
+      user?.password ?? '',
+    );
+
+    if (!user) {
+      return 'USER_NOT_FOUND';
+    } else if (!isPasswordMatched) {
+      return 'INVALID_PASSWORD';
+    } else {
+      return { id: user.id };
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async refreshToken(refreshToken: string) {
+    try {
+      const { id } = this.jwtService.verify(refreshToken);
+      const user = await this.userRepository.findOneBy({ id });
+
+      if (!user || user.refreshToken !== refreshToken) {
+        throw new UnauthorizedException('토큰이 유효하지 않습니다.');
+      }
+
+      const accessToken = this.jwtService.sign({ id });
+
+      return { accessToken };
+    } catch (err) {
+      throw new UnauthorizedException('토큰이 유효하지 않습니다.');
+    }
   }
 }

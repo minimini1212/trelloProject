@@ -1,34 +1,119 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+  Put,
+  HttpStatus,
+} from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ChangePositionColumnDto } from './dto/changeposition-column.dto';
 
-@Controller('column')
+@UseGuards(AuthGuard('jwt'))
+@Controller('board/:boardId/column')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   @Post()
-  create(@Body() createColumnDto: CreateColumnDto) {
-    return this.columnService.create(createColumnDto);
+  async create(
+    @Param('boardId') boardId: string,
+    @Body() createColumnDto: CreateColumnDto,
+    @Req() req,
+  ) {
+    const userId = req.user.id;
+    const newColumn = await this.columnService.create(
+      +boardId,
+      createColumnDto,
+      +userId,
+    );
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: '생성 성공',
+      newColumn,
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.columnService.findAll();
+  @Put(':id/position')
+  async changePosition(
+    @Param('boardId') boardId: string,
+    @Param('id') id: string,
+    @Body() changePositionColumnDto: ChangePositionColumnDto,
+    @Req() req,
+  ) {
+    const userId = req.user.id;
+
+    const updatedColumn = await this.columnService.changePosition(
+      +boardId,
+      +id,
+      changePositionColumnDto,
+      +userId,
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '위치 이동 성공',
+      updatedColumn,
+    };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.columnService.findOne(+id);
-  }
+  @Put(':id')
+  async updateTitle(
+    @Param('boardId') boardId: string,
+    @Param('id') id: string,
+    @Body() updateColumnDto: UpdateColumnDto,
+    @Req() req,
+  ) {
+    const userId = req.user.id;
+    const updatedColumn = await this.columnService.updateTitle(
+      +boardId,
+      +id,
+      updateColumnDto,
+      +userId,
+    );
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateColumnDto: UpdateColumnDto) {
-    return this.columnService.update(+id, updateColumnDto);
+    return {
+      statusCode: HttpStatus.OK,
+      message: '이름 수정 성공',
+      updatedColumn,
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.columnService.remove(+id);
+  async remove(
+    @Param('boardId') boardId: string,
+    @Param('id') id: string,
+    @Req() req,
+  ) {
+    const userId = req.user.id;
+    const deletedColumn = await this.columnService.remove(
+      +id,
+      +boardId,
+      +userId,
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '컬럼 삭제 성공',
+      deletedColumn,
+    };
+  }
+
+  @Get()
+  async findAll(@Param('boardId') boardId: string, @Req() req) {
+    const columns = await this.columnService.findAll(+boardId);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: '컬럼 조회 성공',
+      columns,
+    };
   }
 }

@@ -1,0 +1,35 @@
+@refreshToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImlhdCI6MTcwNDkwNTkyNywiZXhwIjoxNzA1NTEwNzI3fQ.ecyHOh2rHum7frs35PmKW7J_puGDJUd1iORGw098sVM
+
+//회원가입
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+  "email": "tester7@test.com",
+  "password": "123456",
+  "passwordConfirm": "123456",
+  "name": "tester7",
+  "image": "data:image/jpeg;base64,iVBORw0KG...",
+  "description": "hi"
+}
+
+###
+// 로그인
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "tester6@test.com",
+  "password": "123456"
+}
+
+###
+// 회원 탈퇴
+DELETE http://localhost:3000/auth/unregister
+refresh-token: {{refreshToken}}
+
+###
+// 토큰 재발급
+POST http://localhost:3000/auth/refresh
+refresh-token: {{refreshToken}}
+
